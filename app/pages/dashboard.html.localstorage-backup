@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard | Bridgr</title>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        h1 { color: #1e3c72; }
+        button {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌉 Bridgr Dashboard</h1>
+            <button onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h2>👤 My Profile</h2>
+                <div id="profileInfo"></div>
+            </div>
+            <div class="card">
+                <h2>📋 Projects</h2>
+                <input type="text" id="projectTitle" placeholder="Project title" style="width: 100%; padding: 8px; margin: 8px 0;">
+                <textarea id="projectDesc" rows="3" placeholder="Description" style="width: 100%; padding: 8px;"></textarea>
+                <button onclick="addProject()">Post Project</button>
+                <div id="projectsList" style="margin-top: 16px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let projects = JSON.parse(localStorage.getItem('projects') || '[]');
+        const user = localStorage.getItem('bridgr_user');
+        
+        if (!user) {
+            window.location.href = 'signup.html';
+        }
+        
+        const userData = JSON.parse(user);
+        document.getElementById('profileInfo').innerHTML = `
+            <p><strong>${userData.firstName} ${userData.lastName}</strong></p>
+            <p>📍 ${userData.campus}</p>
+            <p>🔧 ${userData.skills?.join(', ') || 'No skills listed'}</p>
+        `;
+        
+        function displayProjects() {
+            const listDiv = document.getElementById('projectsList');
+            if (projects.length === 0) {
+                listDiv.innerHTML = '<p>No projects yet. Post one above!</p>';
+            } else {
+                listDiv.innerHTML = projects.map(p => `
+                    <div style="border-bottom: 1px solid #eee; padding: 8px 0;">
+                        <strong>${p.title}</strong>
+                        <p style="font-size: 14px;">${p.desc}</p>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function addProject() {
+            const title = document.getElementById('projectTitle').value;
+            const desc = document.getElementById('projectDesc').value;
+            if (!title) { alert('Enter a title'); return; }
+            projects.unshift({ title, desc });
+            localStorage.setItem('projects', JSON.stringify(projects));
+            document.getElementById('projectTitle').value = '';
+            document.getElementById('projectDesc').value = '';
+            displayProjects();
+        }
+        
+        function logout() {
+            localStorage.removeItem('bridgr_user');
+            window.location.href = '../index.html';
+        }
+        
+        displayProjects();
+    </script>
+</body>
+</html>

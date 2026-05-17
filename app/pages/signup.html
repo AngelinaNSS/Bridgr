@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Bridgr</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .signup-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .logo {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 8px;
+        }
+        .logo span { color: #ff6b4a; }
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .btn-signup {
+            width: 100%;
+            padding: 14px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .btn-signup:hover { background: #2b4c7c; }
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: #64748b;
+        }
+        .login-link a {
+            color: #ff6b4a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-msg {
+            background: #fee;
+            color: #c00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-card">
+        <div class="logo">💡 Bridgr</div>
+        <div class="subtitle">Join the cross-campus community</div>
+
+        <div id="errorMsg" class="error-msg" style="display: none;"></div>
+
+        <form id="signupForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First name</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last name</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="email" id="email" required placeholder="student@th-deggendorf.de">
+            </div>
+
+            <div class="form-group">
+                <label>Campus</label>
+                <select id="campus" required>
+                    <option value="">Select your campus</option>
+                    <option value="Deggendorf">Deggendorf</option>
+                    <option value="Pfarrkirchen">Pfarrkirchen</option>
+                    <option value="Cham">Cham</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Course / Program</label>
+                <input type="text" id="course" placeholder="e.g., Computer Science">
+            </div>
+
+            <div class="form-group">
+                <label>Skills (comma separated)</label>
+                <input type="text" id="skills" placeholder="e.g., Python, UI/UX">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-signup">Create Account →</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="login.html">Log in</a>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const campus = document.getElementById('campus').value;
+            const course = document.getElementById('course').value;
+            const skillsInput = document.getElementById('skills').value;
+            const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()) : [];
+            const password = document.getElementById('password').value;
+
+            // Hide any previous error
+            document.getElementById('errorMsg').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/users`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        campus: campus,
+                        skills: skills,
+                        bio: '',
+                        password: password
+                    })
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    // Store user info in localStorage for session
+                    localStorage.setItem('bridgr_user', JSON.stringify({
+                        id: userData.id,
+                        email: userData.email,
+                        firstName: userData.first_name,
+                        lastName: userData.last_name,
+                        campus: userData.campus,
+                        skills: userData.skills
+                    }));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('errorMsg').textContent = error.error || 'Signup failed. Email may already exist.';
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = 'Error connecting to server. Make sure backend is running.';
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "Bridgr",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y docker-compose && docker-compose up --build -d",
+  "forwardPorts": [3000, 5000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Bridgr App",
+      "onAutoForward": "openPreview"
+    },
+    "5000": {
+      "label": "Backend API"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-azuretools.vscode-docker"]
+    }
+  }
+}

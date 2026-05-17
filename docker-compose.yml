@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      - PGUSER=bridgr
+      - PGPASSWORD=bridgr123
+      - PGHOST=database
+      - PGPORT=5432
+      - PGDATABASE=bridgr
+    depends_on:
+      - database
+    restart: always
+    networks:
+      - bridgr-network
+
+  database:
+    image: postgres:15
+    container_name: bridgr-database
+    environment:
+      POSTGRES_USER: bridgr
+      POSTGRES_PASSWORD: bridgr123
+      POSTGRES_DB: bridgr
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - bridgr-network
+
+networks:
+  bridgr-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
