@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Bridgr</title>
+    <title>Bridgr | Campus Collaboration</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f4f6f9;
+            background: #f0f4f8;
         }
         .navbar {
             background: white;
@@ -21,24 +21,25 @@
         .nav-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
         }
         .logo {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             color: #1e3c72;
         }
+        .logo span { color: #ff6b4a; }
         .nav-tabs {
             display: flex;
-            gap: 8px;
+            gap: 4px;
             background: #f1f5f9;
             padding: 4px;
-            border-radius: 16px;
+            border-radius: 40px;
             flex-wrap: wrap;
         }
         .nav-tab {
@@ -46,14 +47,25 @@
             border: none;
             background: transparent;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 32px;
             font-weight: 500;
             transition: all 0.2s;
+            position: relative;
         }
         .nav-tab.active {
             background: white;
             color: #1e3c72;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .message-badge {
+            background: #ff6b4a;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            position: absolute;
+            top: -4px;
+            right: -4px;
         }
         .user-menu {
             display: flex;
@@ -63,240 +75,172 @@
         .user-avatar {
             width: 40px;
             height: 40px;
-            background: #1e3c72;
+            background: #ff6b4a;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
+            cursor: pointer;
         }
         .logout-btn {
             background: none;
             border: 1px solid #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 8px 20px;
+            border-radius: 40px;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .logout-btn:hover {
-            background: #f1f5f9;
-        }
+        .logout-btn:hover { background: #f1f5f9; }
+        
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 32px 24px;
+            padding: 32px;
         }
+        
         .welcome-banner {
             background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%);
-            color: white;
+            border-radius: 28px;
             padding: 32px;
-            border-radius: 24px;
             margin-bottom: 32px;
+            color: white;
         }
+        .welcome-banner h1 { font-size: 28px; margin-bottom: 8px; }
         .campus-badge {
             display: inline-block;
             background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 14px;
-        }
-        .panel { display: none; }
-        .panel.active-panel { display: block; }
-        
-        /* Cards Grid */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .filter-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .filter-group label {
-            font-weight: 500;
-            color: #475569;
-        }
-        .campus-filter {
-            padding: 8px 16px;
-            border: 1px solid #cbd5e1;
+            padding: 6px 16px;
             border-radius: 40px;
-            background: white;
             font-size: 14px;
-            cursor: pointer;
+            margin-top: 12px;
         }
-        .projects-grid, .carpool-grid, .events-grid {
+        
+        .two-columns {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
         }
-        .project-card, .carpool-card, .event-card {
+        
+        /* Messaging Panel */
+        .messages-container {
+            display: flex;
+            gap: 24px;
+            height: calc(100vh - 280px);
+            min-height: 500px;
+        }
+        .conversations-list {
+            width: 35%;
             background: white;
             border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e2e8f0;
+            overflow-y: auto;
         }
-        .project-card:hover, .carpool-card:hover, .event-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-        .event-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1e293b;
-        }
-        .campus-tag {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        .campus-deggendorf { background: #dbeafe; color: #1e40af; }
-        .campus-pfarrkirchen { background: #dcfce7; color: #166534; }
-        .campus-cham { background: #fef3c7; color: #92400e; }
-        .event-date-badge {
-            background: #f1f5f9;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .event-description {
-            color: #475569;
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 12px 0;
-        }
-        .attendance-section {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .attend-count {
-            font-size: 14px;
-        }
-        .attend-count span {
-            font-weight: 700;
-            color: #1e3c72;
-        }
-        .attend-btn {
-            background: none;
-            border: 1px solid #10b981;
-            color: #10b981;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 500;
+        .conversation-item {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.2s;
         }
-        .attend-btn:hover {
-            background: #10b981;
-            color: white;
-        }
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
-        }
-        .post-date {
-            font-size: 12px;
-            color: #94a3b8;
-        }
-        .connect-btn {
-            background: none;
-            border: 1px solid #1e3c72;
-            color: #1e3c72;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .connect-btn:hover {
-            background: #1e3c72;
-            color: white;
-        }
+        .conversation-item:hover { background: #f8fafc; }
+        .conversation-item.active { background: #e0e7ff; }
+        .conversation-name { font-weight: 600; color: #1e293b; }
+        .conversation-preview { font-size: 12px; color: #64748b; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conversation-time { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+        .unread-badge { background: #ff6b4a; color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; display: inline-block; margin-top: 4px; }
         
-        /* Form Card */
-        .post-card {
+        .chat-area {
+            width: 65%;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e293b; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 18px; font-size: 14px; }
+        .message-sent { background: #1e3c72; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message-received { background: #f1f5f9; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message-time { font-size: 10px; margin-top: 4px; opacity: 0.7; }
+        .chat-input-area { padding: 16px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; }
+        .chat-input { flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 40px; font-size: 14px; }
+        .send-btn { background: #1e3c72; color: white; border: none; padding: 8px 24px; border-radius: 40px; cursor: pointer; }
+        .send-btn:hover { background: #ff6b4a; }
+        .empty-chat { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; }
+        
+        .profile-card, .history-card, .students-card, .post-card {
             background: white;
             border-radius: 20px;
             padding: 24px;
-            margin-top: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
         }
-        .post-card h3 {
-            margin-bottom: 16px;
-            color: #1e293b;
-        }
-        .form-row {
-            margin-bottom: 16px;
-        }
-        .form-row input, .form-row textarea, .form-row select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-        .submit-btn {
-            background: #1e3c72;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
-        }
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .profile-name { font-size: 20px; font-weight: 700; color: #1e293b; }
+        .edit-profile-btn { background: none; border: 1px solid #cbd5e1; padding: 6px 16px; border-radius: 40px; cursor: pointer; font-size: 12px; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag { background: #e0e7ff; color: #1e3c72; padding: 4px 12px; border-radius: 40px; font-size: 12px; }
+        .bio-text { color: #475569; font-size: 14px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-top: 12px; }
         
-        @media (max-width: 768px) {
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .projects-grid, .carpool-grid, .events-grid {
-                grid-template-columns: 1fr;
-            }
+        .projects-grid { display: grid; gap: 20px; }
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .project-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .project-title { font-size: 17px; font-weight: 700; color: #1e293b; }
+        .campus-tag { font-size: 11px; padding: 4px 12px; border-radius: 40px; }
+        .campus-deggendorf { background: #dbeafe; color: #1e40af; }
+        .campus-pfarrkirchen { background: #dcfce7; color: #166534; }
+        .campus-cham { background: #fef3c7; color: #92400e; }
+        .looking-for { background: #f1f5f9; padding: 8px 12px; border-radius: 12px; margin: 12px 0; font-size: 13px; }
+        .looking-for span { font-weight: 600; color: #ff6b4a; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+        .connect-btn { background: none; border: 1px solid #1e3c72; color: #1e3c72; padding: 6px 16px; border-radius: 40px; cursor: pointer; }
+        .connect-btn:hover { background: #1e3c72; color: white; }
+        .submit-btn { background: #1e3c72; color: white; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; }
+        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+        .form-row { margin-bottom: 16px; }
+        .form-row input, .form-row textarea, .form-row select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; }
+        
+        /* Language Partner Card */
+        .language-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+        .language-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .language-name { font-size: 17px; font-weight: 700; color: #1e293b; }
+        .language-badge { background: #e0e7ff; padding: 4px 12px; border-radius: 40px; font-size: 12px; }
+        
+        .panel { display: none; }
+        .panel.active-panel { display: block; }
+        
+        @media (max-width: 900px) {
+            .two-columns { grid-template-columns: 1fr; }
+            .messages-container { flex-direction: column; height: auto; }
+            .conversations-list, .chat-area { width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="navbar">
         <div class="nav-container">
-            <div class="logo">💡 Bridgr</div>
+            <div class="logo">Bridgr<span>🌉</span></div>
             <div class="nav-tabs">
                 <button class="nav-tab" data-panel="projects">📋 Projects</button>
-                <button class="nav-tab active" data-panel="events">📅 Events</button>
+                <button class="nav-tab" data-panel="events">📅 Events</button>
                 <button class="nav-tab" data-panel="carpool">🚗 Carpool</button>
+                <button class="nav-tab" data-panel="language">🗣️ Language</button>
+                <button class="nav-tab" data-panel="messages" id="messagesTab">💬 Messages <span id="unreadCount" class="message-badge" style="display: none;">0</span></button>
             </div>
             <div class="user-menu">
                 <div class="user-avatar" id="avatarInitials">U</div>
@@ -307,116 +251,99 @@
 
     <div class="main-container">
         <div class="welcome-banner">
-            <h1 id="welcomeName">Welcome to Bridgr!</h1>
-            <p id="welcomeCampus"></p>
-            <p style="margin-top: 12px; font-size: 14px;">🌉 Find collaborators across campuses — Deggendorf, Pfarrkirchen, Cham</p>
+            <h1 id="welcomeName">Welcome to Bridgr</h1>
+            <p>Connecting THD's three campuses — Deggendorf, Pfarrkirchen, Cham</p>
+            <div class="campus-badge" id="campusBadge">📍 Loading...</div>
         </div>
 
         <!-- Projects Panel -->
         <div id="projectsPanel" class="panel">
-            <div class="section-header">
-                <h2 style="color: #1e293b;">📋 Active Projects</h2>
-                <div class="filter-group">
-                    <label>Filter by:</label>
-                    <select id="campusFilter" class="campus-filter">
-                        <option value="all">All Campuses</option>
-                        <option value="Deggendorf">📍 Deggendorf</option>
-                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
-                        <option value="Cham">📍 Cham</option>
-                    </select>
+            <div class="two-columns">
+                <div>
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-name" id="profileName">Student Name</div>
+                            <button class="edit-profile-btn" onclick="editProfile()">✎ Edit Profile</button>
+                        </div>
+                        <div class="skill-tags" id="skillsList"></div>
+                        <div class="bio-text" id="userBio"></div>
+                    </div>
                 </div>
-            </div>
-            <div id="projectsList" class="projects-grid">
-                <div class="empty-state">Loading projects...</div>
-            </div>
-            <div class="post-card">
-                <h3>➕ Post a New Project</h3>
-                <div class="form-row">
-                    <input type="text" id="projectTitle" placeholder="What's your project about?">
+                <div>
+                    <div id="activeProjectsList" class="projects-grid"></div>
+                    <div class="post-card">
+                        <h3>➕ Post a New Project</h3>
+                        <div class="form-row"><input type="text" id="projectTitle" placeholder="Project title"></div>
+                        <div class="form-row"><textarea id="projectDesc" rows="2" placeholder="Describe your project"></textarea></div>
+                        <div class="form-row"><input type="text" id="projectLookingFor" placeholder="Who are you looking for?"></div>
+                        <button class="submit-btn" onclick="postProject()">Post Project →</button>
+                    </div>
                 </div>
-                <div class="form-row">
-                    <textarea id="projectDesc" rows="3" placeholder="Describe what you're working on..."></textarea>
-                </div>
-                <div class="form-row">
-                    <input type="text" id="projectLookingFor" placeholder="Who are you looking for?">
-                </div>
-                <button class="submit-btn" onclick="postProject()">Post Project →</button>
             </div>
         </div>
 
-        <!-- Events Panel (with fake events + attendance) -->
-        <div id="eventsPanel" class="panel active-panel">
-            <div class="section-header">
-                <h2>📅 Upcoming Campus Events</h2>
-                <div class="filter-group">
-                    <label>Filter by:</label>
-                    <select id="eventCampusFilter" class="campus-filter">
-                        <option value="all">All Campuses</option>
-                        <option value="Deggendorf">📍 Deggendorf</option>
-                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
-                        <option value="Cham">📍 Cham</option>
-                    </select>
-                </div>
+        <!-- Events Panel - FULLY RESTORED -->
+        <div id="eventsPanel" class="panel">
+            <div class="history-card" style="margin-bottom: 20px;">
+                <div class="history-title">📅 Upcoming Campus Events</div>
+                <div id="eventsList" class="projects-grid"></div>
             </div>
-            <div id="eventsList" class="events-grid"></div>
             <div class="post-card">
                 <h3>➕ Propose an Event</h3>
-                <div class="form-row">
-                    <input type="text" id="eventTitle" placeholder="Event name">
-                </div>
-                <div class="form-row">
-                    <input type="text" id="eventLocation" placeholder="Campus (Deggendorf, Pfarrkirchen, Cham)">
-                </div>
-                <div class="form-row">
-                    <input type="date" id="eventDate">
-                </div>
-                <div class="form-row">
-                    <textarea id="eventDesc" rows="2" placeholder="Short description..."></textarea>
-                </div>
+                <div class="form-row"><input type="text" id="eventTitle" placeholder="Event name"></div>
+                <div class="form-row"><input type="text" id="eventLocation" placeholder="Campus (Deggendorf, Pfarrkirchen, Cham)"></div>
+                <div class="form-row"><input type="date" id="eventDate"></div>
+                <div class="form-row"><textarea id="eventDesc" rows="2" placeholder="Short description"></textarea></div>
                 <button class="submit-btn" onclick="addEvent()">Propose Event →</button>
             </div>
         </div>
 
-        <!-- Carpool Panel -->
+        <!-- Carpool Panel - FULLY RESTORED -->
         <div id="carpoolPanel" class="panel">
-            <div class="section-header">
-                <h2>🚗 Ride Share</h2>
-                <div class="filter-group">
-                    <label>Filter by:</label>
-                    <select id="carpoolFilter" class="campus-filter">
-                        <option value="all">All Rides</option>
-                        <option value="Deggendorf">From Deggendorf</option>
-                        <option value="Pfarrkirchen">From Pfarrkirchen</option>
-                        <option value="Cham">From Cham</option>
-                    </select>
-                </div>
+            <div class="history-card" style="margin-bottom: 20px;">
+                <div class="history-title">🚗 Ride Share</div>
+                <div id="carpoolList" class="projects-grid"></div>
             </div>
-            <div id="carpoolList" class="carpool-grid"></div>
             <div class="post-card">
                 <h3>➕ Offer a Ride</h3>
-                <div class="form-row">
-                    <select id="rideFrom">
-                        <option value="">From Campus</option>
-                        <option value="Deggendorf">📍 Deggendorf</option>
-                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
-                        <option value="Cham">📍 Cham</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <select id="rideTo">
-                        <option value="">To Campus</option>
-                        <option value="Deggendorf">📍 Deggendorf</option>
-                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
-                        <option value="Cham">📍 Cham</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <input type="text" id="rideDateTime" placeholder="Date & time (e.g., Fri 5pm)">
-                </div>
-                <div class="form-row">
-                    <input type="number" id="rideSeats" placeholder="Seats available">
-                </div>
+                <div class="form-row"><select id="rideFrom"><option value="">From Campus</option><option value="Deggendorf">📍 Deggendorf</option><option value="Pfarrkirchen">📍 Pfarrkirchen</option><option value="Cham">📍 Cham</option></select></div>
+                <div class="form-row"><select id="rideTo"><option value="">To Campus</option><option value="Deggendorf">📍 Deggendorf</option><option value="Pfarrkirchen">📍 Pfarrkirchen</option><option value="Cham">📍 Cham</option></select></div>
+                <div class="form-row"><input type="text" id="rideDateTime" placeholder="Date & time"></div>
+                <div class="form-row"><input type="number" id="rideSeats" placeholder="Seats available"></div>
+                <div class="form-row"><input type="text" id="rideDriver" placeholder="Your name"></div>
                 <button class="submit-btn" onclick="offerRide()">Post Ride →</button>
+            </div>
+        </div>
+
+        <!-- Language Panel -->
+        <div id="languagePanel" class="panel">
+            <div class="two-columns">
+                <div>
+                    <div class="history-card">
+                        <div class="history-title">🗣️ Language Partners</div>
+                        <div id="languagePartnersList"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="post-card">
+                        <h3>➕ I want to practice a language</h3>
+                        <div class="form-row"><select id="nativeLanguage"><option value="">My native language</option><option>🇩🇪 German</option><option>🇬🇧 English</option><option>🇪🇸 Spanish</option><option>🇫🇷 French</option><option>🇮🇹 Italian</option></select></div>
+                        <div class="form-row"><select id="practiceLanguage"><option value="">I want to practice</option><option>🇩🇪 German</option><option>🇬🇧 English</option><option>🇪🇸 Spanish</option><option>🇫🇷 French</option><option>🇮🇹 Italian</option></select></div>
+                        <div class="form-row"><input type="text" id="languageLevel" placeholder="Your level (Beginner/Intermediate/Advanced)"></div>
+                        <div class="form-row"><textarea id="languageMessage" rows="2" placeholder="Say something about yourself"></textarea></div>
+                        <button class="submit-btn" onclick="postLanguageExchange()">Find Language Partner →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Panel -->
+        <div id="messagesPanel" class="panel">
+            <div class="messages-container">
+                <div class="conversations-list" id="conversationsList"></div>
+                <div class="chat-area" id="chatArea">
+                    <div class="empty-chat">Select a conversation to start messaging</div>
+                </div>
             </div>
         </div>
     </div>
@@ -425,40 +352,89 @@
         const API_URL = '/api';
         let currentUser = null;
         let allProjects = [];
-        let allCarpools = [];
+        let currentConversation = null;
         
-        // Fake events with attendance tracking
+        // Messaging System
+        let conversations = JSON.parse(localStorage.getItem('bridgr_conversations')) || [];
+        let userSkills = ['UI/UX Design', 'Frontend Development'];
+        let userBio = 'Looking for collaborators across campuses!';
+        
+        // Events data
         let fakeEvents = [
-            {
-                id: 1001,
-                title: "🎉 Brazilian Night Party",
-                location: "Deggendorf",
-                event_date: "2026-06-15",
-                description: "Samba, caipirinhas, and great music! Come celebrate Brazilian culture with food and dancing.",
-                attending: 24
-            },
-            {
-                id: 1002,
-                title: "📝 CV Writing Workshop",
-                location: "Cham",
-                event_date: "2026-05-28",
-                description: "Learn how to create a professional CV that gets noticed. Bring your laptop!",
-                attending: 12
-            },
-            {
-                id: 1003,
-                title: "🧠 Trivia Night",
-                location: "Pfarrkirchen",
-                event_date: "2026-06-05",
-                description: "Test your knowledge on pop culture, history, and random facts. Prizes for winners!",
-                attending: 18
-            }
+            { id: 1, title: "🎉 Brazilian Night Party", location: "Deggendorf", event_date: "2026-06-15", description: "Samba, caipirinhas, and great music! Come celebrate Brazilian culture.", attending: 24 },
+            { id: 2, title: "📝 CV Writing Workshop", location: "Cham", event_date: "2026-05-28", description: "Learn how to create a professional CV that gets noticed.", attending: 12 },
+            { id: 3, title: "🧠 Trivia Night", location: "Pfarrkirchen", event_date: "2026-06-05", description: "Test your knowledge on pop culture and history. Prizes for winners!", attending: 18 }
         ];
         
+        // Carpool data
+        let sampleRides = [
+            { id: 1, from_campus: "Deggendorf", to_campus: "Pfarrkirchen", datetime: "Friday June 5th, 2:00 PM", seats: 3, driver: "Lukas", gasContribution: "€5" },
+            { id: 2, from_campus: "Cham", to_campus: "Deggendorf", datetime: "Monday June 8th, 9:00 AM", seats: 2, driver: "Maria", gasContribution: "€4" },
+            { id: 3, from_campus: "Pfarrkirchen", to_campus: "Cham", datetime: "Wednesday June 10th, 1:00 PM", seats: 4, driver: "Thomas", gasContribution: "€6" }
+        ];
+        
+        // Language partners
+        let languagePartners = [
+            { name: "Sophie M.", campus: "Deggendorf", native: "🇩🇪 German", practice: "🇬🇧 English", level: "Intermediate", message: "I want to improve my English conversation skills. Can help with German!" },
+            { name: "Carlos R.", campus: "Pfarrkirchen", native: "🇪🇸 Spanish", practice: "🇩🇪 German", level: "Beginner", message: "Just moved to Germany, need help with everyday German. I offer Spanish!" }
+        ];
+
         let userAttending = JSON.parse(localStorage.getItem('bridgr_attending') || '[]');
 
-        function saveAttending() {
-            localStorage.setItem('bridgr_attending', JSON.stringify(userAttending));
+        function saveConversations() { localStorage.setItem('bridgr_conversations', JSON.stringify(conversations)); updateUnreadBadge(); }
+        function updateUnreadBadge() {
+            const totalUnread = conversations.reduce((sum, c) => sum + (c.unread || 0), 0);
+            const badge = document.getElementById('unreadCount');
+            if (totalUnread > 0) { badge.style.display = 'inline-block'; badge.innerText = totalUnread > 9 ? '9+' : totalUnread; }
+            else { badge.style.display = 'none'; }
+        }
+
+        function startConversation(withPerson) {
+            let existingConv = conversations.find(c => c.with === withPerson);
+            if (!existingConv) {
+                existingConv = { with: withPerson, messages: [], unread: 0, lastUpdated: new Date().toISOString() };
+                conversations.unshift(existingConv);
+                saveConversations();
+            }
+            currentConversation = existingConv;
+            if (existingConv.unread > 0) { existingConv.unread = 0; saveConversations(); }
+            renderConversationsList();
+            renderChatArea();
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-panel="messages"]').classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+            document.getElementById('messagesPanel').classList.add('active-panel');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !currentConversation) return;
+            currentConversation.messages.push({ from: currentUser.email, text: text, time: new Date().toISOString() });
+            currentConversation.lastUpdated = new Date().toISOString();
+            saveConversations();
+            input.value = '';
+            renderChatArea();
+            renderConversationsList();
+        }
+
+        function renderConversationsList() {
+            const container = document.getElementById('conversationsList');
+            if (conversations.length === 0) { container.innerHTML = '<div class="empty-state" style="padding: 40px;">No messages yet. Click "Message" on any project or partner to start a conversation.</div>'; return; }
+            container.innerHTML = conversations.map(conv => `<div class="conversation-item ${currentConversation?.with === conv.with ? 'active' : ''}" onclick="selectConversation('${escapeHtml(conv.with)}')"><div class="conversation-name">${escapeHtml(conv.with)}</div><div class="conversation-preview">${conv.messages.length > 0 ? escapeHtml(conv.messages[conv.messages.length-1].text.substring(0, 50)) : 'Start a conversation'}</div><div class="conversation-time">${new Date(conv.lastUpdated).toLocaleDateString()}</div>${conv.unread > 0 ? `<div class="unread-badge">${conv.unread} new</div>` : ''}</div>`).join('');
+        }
+
+        function selectConversation(withPerson) {
+            const conv = conversations.find(c => c.with === withPerson);
+            if (conv) { currentConversation = conv; if (conv.unread > 0) { conv.unread = 0; saveConversations(); } renderConversationsList(); renderChatArea(); }
+        }
+
+        function renderChatArea() {
+            const container = document.getElementById('chatArea');
+            if (!currentConversation) { container.innerHTML = '<div class="empty-chat">Select a conversation to start messaging</div>'; return; }
+            const messagesHtml = currentConversation.messages.map(msg => `<div class="message-bubble ${msg.from === currentUser.email ? 'message-sent' : 'message-received'}">${escapeHtml(msg.text)}<div class="message-time">${new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div>`).join('');
+            container.innerHTML = `<div class="chat-header">💬 Chat with ${escapeHtml(currentConversation.with)}</div><div class="chat-messages" id="chatMessages">${messagesHtml || '<div class="empty-chat" style="height:100%;">No messages yet. Say hello!</div>'}</div><div class="chat-input-area"><input type="text" class="chat-input" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key===\'Enter\') sendMessage()"><button class="send-btn" onclick="sendMessage()">Send</button></div>`;
+            const messagesDiv = document.getElementById('chatMessages'); if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
         async function loadData() {
@@ -466,222 +442,105 @@
             if (!user) { window.location.href = 'signup.html'; return; }
             currentUser = JSON.parse(user);
             document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
-            document.getElementById('welcomeCampus').innerHTML = `<span class="campus-badge">📍 ${currentUser.campus || 'THD'}</span>`;
-            const initial = (currentUser.firstName?.charAt(0) || currentUser.email?.charAt(0) || 'U').toUpperCase();
-            document.getElementById('avatarInitials').innerText = initial;
-            
+            document.getElementById('campusBadge').innerHTML = `📍 ${currentUser.campus || 'THD'} Campus`;
+            document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
+            document.getElementById('profileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
+            const savedSkills = localStorage.getItem('bridgr_skills'); if (savedSkills) userSkills = JSON.parse(savedSkills);
+            const savedBio = localStorage.getItem('bridgr_bio'); if (savedBio) userBio = savedBio;
+            document.getElementById('skillsList').innerHTML = userSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
+            document.getElementById('userBio').innerHTML = escapeHtml(userBio);
             await loadProjects();
-            await loadRealEvents();
+            displayActiveProjects();
             displayEvents();
-            await loadCarpools();
-            
-            document.getElementById('campusFilter').addEventListener('change', () => displayProjects());
-            document.getElementById('eventCampusFilter').addEventListener('change', () => displayEvents());
-            document.getElementById('carpoolFilter').addEventListener('change', () => displayCarpools());
-        }
-
-        // ========== PROJECTS ==========
-        async function loadProjects() {
-            try {
-                const response = await fetch(`${API_URL}/projects`);
-                allProjects = await response.json();
-                displayProjects();
-            } catch (error) {
-                document.getElementById('projectsList').innerHTML = '<div class="empty-state">⚠️ Could not load projects.</div>';
-            }
-        }
-
-        function displayProjects() {
-            const filter = document.getElementById('campusFilter').value;
-            let filtered = allProjects;
-            if (filter !== 'all') filtered = allProjects.filter(p => p.campus === filter);
-            if (filtered.length === 0) {
-                document.getElementById('projectsList').innerHTML = '<div class="empty-state">✨ No projects yet. Be the first to post!</div>';
-                return;
-            }
-            document.getElementById('projectsList').innerHTML = filtered.map(p => {
-                const campusClass = p.campus === 'Deggendorf' ? 'campus-deggendorf' : (p.campus === 'Pfarrkirchen' ? 'campus-pfarrkirchen' : 'campus-cham');
-                return `
-                    <div class="project-card">
-                        <div class="card-header">
-                            <div class="event-title">${escapeHtml(p.title)}</div>
-                            <div class="campus-tag ${campusClass}">📍 ${escapeHtml(p.campus)}</div>
-                        </div>
-                        <div class="event-description">${escapeHtml(p.description || 'No description')}</div>
-                        <div class="attendance-section" style="background:#f1f5f9;">
-                            <span>🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="post-date">📅 ${new Date(p.created_at).toLocaleDateString()}</span>
-                            <button class="connect-btn" onclick="alert('📧 Contact ${escapeHtml(p.author_email)}')">Connect →</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        async function postProject() {
-            const title = document.getElementById('projectTitle').value;
-            if (!title) { alert('Enter a title'); return; }
-            const response = await fetch(`${API_URL}/projects`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title, description: document.getElementById('projectDesc').value,
-                    looking_for: document.getElementById('projectLookingFor').value,
-                    campus: currentUser.campus, author_email: currentUser.email
-                })
-            });
-            if (response.ok) {
-                document.getElementById('projectTitle').value = '';
-                document.getElementById('projectDesc').value = '';
-                document.getElementById('projectLookingFor').value = '';
-                await loadProjects();
-                alert('✅ Project posted!');
-            }
-        }
-
-        // ========== EVENTS ==========
-        async function loadRealEvents() {
-            try {
-                const response = await fetch(`${API_URL}/events`);
-                const realEvents = await response.json();
-                // Merge fake events with real ones
-                allEvents = [...fakeEvents, ...realEvents];
-                displayEvents();
-            } catch (error) {
-                allEvents = [...fakeEvents];
-                displayEvents();
-            }
+            displayCarpools();
+            displayLanguagePartners();
+            renderConversationsList();
+            updateUnreadBadge();
         }
 
         function displayEvents() {
-            const filter = document.getElementById('eventCampusFilter').value;
-            let filtered = allEvents;
-            if (filter !== 'all') filtered = allEvents.filter(e => e.location === filter);
-            if (filtered.length === 0) {
-                document.getElementById('eventsList').innerHTML = '<div class="empty-state">📅 No events found.</div>';
-                return;
-            }
-            document.getElementById('eventsList').innerHTML = filtered.map(e => {
-                const campusClass = e.location === 'Deggendorf' ? 'campus-deggendorf' : (e.location === 'Pfarrkirchen' ? 'campus-pfarrkirchen' : 'campus-cham');
-                const isAttending = userAttending.includes(e.id);
-                const attendingCount = e.attending || 0;
-                const date = new Date(e.event_date);
-                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
-                return `
-                    <div class="event-card">
-                        <div class="card-header">
-                            <div class="event-title">${escapeHtml(e.title)}</div>
-                            <div class="campus-tag ${campusClass}">📍 ${escapeHtml(e.location)}</div>
-                        </div>
-                        <div class="event-date-badge" style="display:inline-block; margin-bottom:12px;">📅 ${formattedDate}</div>
-                        <div class="event-description">${escapeHtml(e.description || 'No description yet.')}</div>
-                        <div class="attendance-section">
-                            <div class="attend-count">
-                                👥 <span>${attendingCount}</span> people attending
-                            </div>
-                            <button class="attend-btn" data-event-id="${e.id}" data-attending="${attendingCount}" onclick="toggleAttendance(${e.id}, this)">
-                                ${isAttending ? '✓ Going' : '+ Attend'}
-                            </button>
-                        </div>
-                        <div class="card-footer">
-                            <span class="post-date">📍 ${escapeHtml(e.location)} Campus</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            const eventsHtml = fakeEvents.map(e => `<div class="project-card"><div class="card-header"><div class="project-title">${escapeHtml(e.title)}</div><div class="campus-tag campus-deggendorf">📍 ${escapeHtml(e.location)}</div></div><div class="event-description">${escapeHtml(e.description)}</div><div class="looking-for">📅 ${new Date(e.event_date).toLocaleDateString()} | 👥 ${e.attending} attending</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(e.title)} Organizer')">Message Organizer →</button></div></div>`).join('');
+            document.getElementById('eventsList').innerHTML = eventsHtml || '<div class="empty-state">No events yet.</div>';
         }
 
-        function toggleAttendance(eventId, button) {
-            if (userAttending.includes(eventId)) {
-                userAttending = userAttending.filter(id => id !== eventId);
-                const event = allEvents.find(e => e.id === eventId);
-                if (event && event.attending > 0) event.attending--;
-            } else {
-                userAttending.push(eventId);
-                const event = allEvents.find(e => e.id === eventId);
-                if (event) event.attending = (event.attending || 0) + 1;
-            }
-            saveAttending();
-            displayEvents();
-        }
-
-        async function addEvent() {
+        function addEvent() {
             const title = document.getElementById('eventTitle').value;
             const location = document.getElementById('eventLocation').value;
             const event_date = document.getElementById('eventDate').value;
             const description = document.getElementById('eventDesc').value;
-            if (!title) { alert('Enter an event title'); return; }
-            const newEvent = {
-                id: Date.now(),
-                title, location, event_date, description,
-                attending: 0
-            };
-            fakeEvents.push(newEvent);
-            allEvents = [...fakeEvents];
+            if (!title) { alert("Enter event title"); return; }
+            fakeEvents.unshift({ id: Date.now(), title, location, event_date, description, attending: 0 });
             displayEvents();
-            document.getElementById('eventTitle').value = '';
-            document.getElementById('eventLocation').value = '';
-            document.getElementById('eventDate').value = '';
-            document.getElementById('eventDesc').value = '';
-            alert('✅ Event proposed!');
-        }
-
-        // ========== CARPOOLS ==========
-        async function loadCarpools() {
-            try {
-                const response = await fetch(`${API_URL}/carpools`);
-                allCarpools = await response.json();
-                displayCarpools();
-            } catch (error) {
-                document.getElementById('carpoolList').innerHTML = '<div class="empty-state">⚠️ Could not load rides.</div>';
-            }
+            document.getElementById('eventTitle').value = ''; document.getElementById('eventLocation').value = ''; document.getElementById('eventDate').value = ''; document.getElementById('eventDesc').value = '';
+            alert("✅ Event added!");
         }
 
         function displayCarpools() {
-            const filter = document.getElementById('carpoolFilter').value;
-            let filtered = allCarpools;
-            if (filter !== 'all') filtered = allCarpools.filter(r => r.from_campus === filter);
-            if (filtered.length === 0) {
-                document.getElementById('carpoolList').innerHTML = '<div class="empty-state">🚗 No rides offered yet.</div>';
-                return;
-            }
-            document.getElementById('carpoolList').innerHTML = filtered.map(r => `
-                <div class="carpool-card">
-                    <div class="card-header">
-                        <div class="event-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div>
-                        <div class="event-date-badge">💺 ${r.seats} seats</div>
-                    </div>
-                    <div class="event-description" style="text-align:center;">🕐 ${escapeHtml(r.datetime || 'Time TBD')}</div>
-                    <div class="card-footer">
-                        <span class="post-date">📅 ${new Date(r.created_at).toLocaleDateString()}</span>
-                        <button class="connect-btn" onclick="alert('📧 Message the driver to claim a seat!')">Request →</button>
-                    </div>
-                </div>
-            `).join('');
+            const carpoolsHtml = sampleRides.map(r => `<div class="project-card"><div class="card-header"><div class="project-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div><div class="campus-tag campus-deggendorf">💺 ${r.seats} seats</div></div><div class="looking-for">🕐 ${escapeHtml(r.datetime)}</div><div class="looking-for">💰 Gas contribution: ${r.gasContribution} (shared among riders)</div><div class="card-footer"><span>Driver: ${escapeHtml(r.driver)}</span><button class="connect-btn" onclick="startConversation('${escapeHtml(r.driver)}')">Message Driver →</button></div></div>`).join('');
+            document.getElementById('carpoolList').innerHTML = carpoolsHtml || '<div class="empty-state">No rides offered yet.</div>';
         }
 
-        async function offerRide() {
+        function offerRide() {
             const from_campus = document.getElementById('rideFrom').value;
             const to_campus = document.getElementById('rideTo').value;
-            if (!from_campus || !to_campus) { alert('Select departure and destination'); return; }
-            await fetch(`${API_URL}/carpools`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    from_campus, to_campus,
-                    datetime: document.getElementById('rideDateTime').value,
-                    seats: parseInt(document.getElementById('rideSeats').value) || 1
-                })
-            });
-            document.getElementById('rideFrom').value = '';
-            document.getElementById('rideTo').value = '';
-            document.getElementById('rideDateTime').value = '';
-            document.getElementById('rideSeats').value = '';
-            await loadCarpools();
-            alert('✅ Ride posted!');
+            const datetime = document.getElementById('rideDateTime').value;
+            const seats = document.getElementById('rideSeats').value;
+            const driver = document.getElementById('rideDriver').value;
+            if (!from_campus || !to_campus) { alert("Select departure and destination"); return; }
+            sampleRides.unshift({ id: Date.now(), from_campus, to_campus, datetime, seats: parseInt(seats) || 2, driver: driver || currentUser.firstName || "Student", gasContribution: "€5" });
+            displayCarpools();
+            document.getElementById('rideFrom').value = ''; document.getElementById('rideTo').value = ''; document.getElementById('rideDateTime').value = ''; document.getElementById('rideSeats').value = ''; document.getElementById('rideDriver').value = '';
+            alert("✅ Ride offered!");
+        }
+
+        function displayLanguagePartners() {
+            const partnersHtml = languagePartners.map(p => `<div class="language-card"><div class="language-header"><div class="language-name">${escapeHtml(p.name)}</div><div class="language-badge">📍 ${escapeHtml(p.campus)}</div></div><div class="looking-for">🗣️ Native: ${escapeHtml(p.native)} | Learning: ${escapeHtml(p.practice)} (${escapeHtml(p.level)})</div><div class="looking-for">💬 "${escapeHtml(p.message)}"</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(p.name)}')">Message →</button></div></div>`).join('');
+            document.getElementById('languagePartnersList').innerHTML = partnersHtml || '<div class="empty-state">No language partners yet.</div>';
+        }
+
+        function postLanguageExchange() {
+            const nativeLang = document.getElementById('nativeLanguage').value;
+            const practiceLang = document.getElementById('practiceLanguage').value;
+            if (!nativeLang || !practiceLang) { alert("Please select languages"); return; }
+            languagePartners.unshift({ name: currentUser.firstName || currentUser.email.split('@')[0], campus: currentUser.campus || "THD", native: nativeLang, practice: practiceLang, level: document.getElementById('languageLevel').value || "Not specified", message: document.getElementById('languageMessage').value || "Looking for a language partner!" });
+            displayLanguagePartners();
+            document.getElementById('nativeLanguage').value = ''; document.getElementById('practiceLanguage').value = ''; document.getElementById('languageLevel').value = ''; document.getElementById('languageMessage').value = '';
+            alert("✅ Language exchange posted!");
+        }
+
+        function editProfile() {
+            const newSkills = prompt("Enter your skills (comma separated):", userSkills.join(', '));
+            if (newSkills) { userSkills = newSkills.split(',').map(s => s.trim()); localStorage.setItem('bridgr_skills', JSON.stringify(userSkills)); document.getElementById('skillsList').innerHTML = userSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join(''); }
+            const newBio = prompt("Enter your bio:", userBio);
+            if (newBio) { userBio = newBio; localStorage.setItem('bridgr_bio', userBio); document.getElementById('userBio').innerHTML = escapeHtml(userBio); }
+            alert("✅ Profile updated!");
+        }
+
+        async function loadProjects() {
+            try { const response = await fetch(`${API_URL}/projects`); allProjects = await response.json(); displayActiveProjects(); } catch(e) { console.error(e); }
+        }
+
+        function displayActiveProjects() {
+            const myProjects = allProjects.filter(p => p.author_email === currentUser.email);
+            const otherProjects = allProjects.filter(p => p.author_email !== currentUser.email);
+            let html = '';
+            if (myProjects.length) html += `<h3 style="margin-bottom:12px;">📌 My Active Projects</h3>` + myProjects.map(p => renderProjectCard(p)).join('');
+            if (otherProjects.length) html += `<h3 style="margin:24px 0 12px;">🤝 Projects Looking for Collaborators</h3>` + otherProjects.map(p => renderProjectCard(p)).join('');
+            if (!allProjects.length) html = `<div class="empty-state">✨ No projects yet. Be the first to post!</div>`;
+            document.getElementById('activeProjectsList').innerHTML = html;
+        }
+
+        function renderProjectCard(p) {
+            const campusClass = p.campus === 'Deggendorf' ? 'campus-deggendorf' : (p.campus === 'Pfarrkirchen' ? 'campus-pfarrkirchen' : 'campus-cham');
+            return `<div class="project-card"><div class="card-header"><div class="project-title">${escapeHtml(p.title)}</div><div class="campus-tag ${campusClass}">📍 ${escapeHtml(p.campus)}</div></div><div class="looking-for">🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(p.author_email)}')">Message →</button></div></div>`;
+        }
+
+        async function postProject() {
+            const title = document.getElementById('projectTitle').value;
+            if (!title) { alert("Enter a title"); return; }
+            await fetch(`${API_URL}/projects`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, description: document.getElementById('projectDesc').value, looking_for: document.getElementById('projectLookingFor').value, campus: currentUser.campus, author_email: currentUser.email }) });
+            document.getElementById('projectTitle').value = ''; document.getElementById('projectDesc').value = ''; document.getElementById('projectLookingFor').value = '';
+            await loadProjects(); alert("✅ Project posted!");
         }
 
         function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
