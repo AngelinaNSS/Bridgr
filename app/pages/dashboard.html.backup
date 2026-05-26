@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Bridgr</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; }
+        .navbar { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 0; }
+        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #1e3c72; }
+        .logo span { color: #ff6b4a; }
+        .nav-tabs { display: flex; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 16px; }
+        .nav-tab { padding: 8px 24px; border: none; background: transparent; cursor: pointer; border-radius: 12px; font-weight: 500; }
+        .nav-tab.active { background: white; color: #1e3c72; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .user-menu { display: flex; align-items: center; gap: 16px; }
+        .user-avatar { width: 40px; height: 40px; background: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        .logout-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .main-container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+        .welcome-banner { background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%); color: white; padding: 32px; border-radius: 24px; margin-bottom: 32px; }
+        .campus-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 50px; font-size: 14px; }
+        .panel { display: none; }
+        .panel.active-panel { display: block; }
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .card { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h3 { color: #1e293b; margin-bottom: 16px; }
+        .project-item, .event-item, .carpool-item { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
+        .project-title { font-weight: bold; color: #1e3c72; }
+        .looking-for { font-size: 13px; color: #ff6b4a; margin-top: 4px; }
+        .form-group { margin-bottom: 16px; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; }
+        button { background: #1e3c72; color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; }
+        .error-msg { color: red; padding: 10px; background: #fee; border-radius: 8px; margin: 10px 0; }
+        @media (max-width: 768px) { .two-columns { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">💡 Bridgr </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-panel="projects">📋 Projects</button>
+                <button class="nav-tab" data-panel="events">📅 Events</button>
+                <button class="nav-tab" data-panel="carpool">🚗 Carpool</button>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar" id="avatarInitials">U</div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="welcome-banner">
+            <h1 id="welcomeName">Welcome to Bridgr!</h1>
+            <p id="welcomeCampus"></p>
+        </div>
+
+        <div id="projectsPanel" class="panel active-panel">
+            <div class="two-columns">
+                <div class="card">
+                    <h3>📋 Active Projects</h3>
+                    <div id="projectsList">Loading projects...</div>
+                </div>
+                <div class="card">
+                    <h3>+ Post a Project</h3>
+                    <div class="form-group"><input type="text" id="projectTitle" placeholder="Project title"></div>
+                    <div class="form-group"><textarea id="projectDesc" rows="3" placeholder="Description"></textarea></div>
+                    <div class="form-group"><input type="text" id="projectLookingFor" placeholder="Looking for..."></div>
+                    <button onclick="postProject()">Post Project</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="eventsPanel" class="panel">
+            <div class="two-columns">
+                <div class="card"><h3>📅 Upcoming Events</h3><div id="eventsList">Loading events...</div></div>
+                <div class="card"><h3>+ Add Event</h3>
+                    <div class="form-group"><input type="text" id="eventTitle" placeholder="Event name"></div>
+                    <div class="form-group"><input type="text" id="eventLocation" placeholder="Location"></div>
+                    <div class="form-group"><input type="date" id="eventDate"></div>
+                    <button onclick="addEvent()">Add Event</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="carpoolPanel" class="panel">
+            <div class="two-columns">
+                <div class="card"><h3>🚗 Available Rides</h3><div id="carpoolList">Loading carpools...</div></div>
+                <div class="card"><h3>+ Offer a Ride</h3>
+                    <div class="form-group"><select id="rideFrom"><option>Deggendorf</option><option>Pfarrkirchen</option><option>Cham</option></select></div>
+                    <div class="form-group"><select id="rideTo"><option>Deggendorf</option><option>Pfarrkirchen</option><option>Cham</option></select></div>
+                    <div class="form-group"><input type="text" id="rideDateTime" placeholder="Date/time"></div>
+                    <div class="form-group"><input type="number" id="rideSeats" placeholder="Seats"></div>
+                    <button onclick="offerRide()">Post Ride</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+
+        async function loadData() {
+            const user = localStorage.getItem('bridgr_user');
+            if (!user) { window.location.href = 'signup.html'; return; }
+            currentUser = JSON.parse(user);
+            document.getElementById('welcomeName').innerHTML = `Welcome, ${currentUser.firstName || currentUser.email}!`;
+            document.getElementById('welcomeCampus').innerHTML = `<span class="campus-badge">📍 ${currentUser.campus || 'THD'}</span>`;
+            document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
+            await loadProjects();
+            await loadEvents();
+            await loadCarpools();
+        }
+
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_URL}/projects`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const projects = await response.json();
+                if (projects.length === 0) {
+                    document.getElementById('projectsList').innerHTML = '<p>No projects yet. Be the first to post!</p>';
+                } else {
+                    document.getElementById('projectsList').innerHTML = projects.map(p => `
+                        <div class="project-item">
+                            <div class="project-title">${escapeHtml(p.title)}</div>
+                            <div>${escapeHtml(p.description || '')}</div>
+                            <div class="looking-for">🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</div>
+                            <div>📌 ${escapeHtml(p.campus)}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('projectsList').innerHTML = `<div class="error-msg">⚠️ Error loading projects: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+
+        async function postProject() {
+            const title = document.getElementById('projectTitle').value;
+            if (!title) { alert('Enter a title'); return; }
+            try {
+                const response = await fetch(`${API_URL}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: title,
+                        description: document.getElementById('projectDesc').value,
+                        looking_for: document.getElementById('projectLookingFor').value,
+                        campus: currentUser.campus,
+                        author_email: currentUser.email
+                    })
+                });
+                if (response.ok) {
+                    document.getElementById('projectTitle').value = '';
+                    document.getElementById('projectDesc').value = '';
+                    document.getElementById('projectLookingFor').value = '';
+                    await loadProjects();
+                    alert('Project posted!');
+                } else {
+                    alert('Error posting project');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_URL}/events`);
+                const events = await response.json();
+                if (events.length === 0) {
+                    document.getElementById('eventsList').innerHTML = '<p>No events yet.</p>';
+                } else {
+                    document.getElementById('eventsList').innerHTML = events.map(e => `
+                        <div class="event-item">
+                            <div class="project-title">${escapeHtml(e.title)}</div>
+                            <div>📍 ${escapeHtml(e.location || 'TBD')}</div>
+                            <div>📅 ${e.event_date || 'TBA'}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('eventsList').innerHTML = '<p>Error loading events</p>';
+            }
+        }
+
+        async function addEvent() {
+            const title = document.getElementById('eventTitle').value;
+            if (!title) { alert('Enter a title'); return; }
+            try {
+                await fetch(`${API_URL}/events`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: title,
+                        location: document.getElementById('eventLocation').value,
+                        event_date: document.getElementById('eventDate').value
+                    })
+                });
+                document.getElementById('eventTitle').value = '';
+                document.getElementById('eventLocation').value = '';
+                document.getElementById('eventDate').value = '';
+                await loadEvents();
+                alert('Event added!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadCarpools() {
+            try {
+                const response = await fetch(`${API_URL}/carpools`);
+                const carpools = await response.json();
+                if (carpools.length === 0) {
+                    document.getElementById('carpoolList').innerHTML = '<p>No rides offered yet.</p>';
+                } else {
+                    document.getElementById('carpoolList').innerHTML = carpools.map(r => `
+                        <div class="carpool-item">
+                            <div class="project-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div>
+                            <div>📅 ${escapeHtml(r.datetime)}</div>
+                            <div>💺 ${r.seats} seats</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                document.getElementById('carpoolList').innerHTML = '<p>Error loading rides</p>';
+            }
+        }
+
+        async function offerRide() {
+            const from_campus = document.getElementById('rideFrom').value;
+            const to_campus = document.getElementById('rideTo').value;
+            const datetime = document.getElementById('rideDateTime').value;
+            const seats = document.getElementById('rideSeats').value;
+            if (!datetime || !seats) { alert('Fill all fields'); return; }
+            try {
+                await fetch(`${API_URL}/carpools`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from_campus, to_campus, datetime, seats: parseInt(seats) })
+                });
+                document.getElementById('rideDateTime').value = '';
+                document.getElementById('rideSeats').value = '';
+                await loadCarpools();
+                alert('Ride posted!');
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('bridgr_user');
+            window.location.href = '../index.html';
+        }
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+                document.getElementById(`${tab.dataset.panel}Panel`).classList.add('active-panel');
+            });
+        });
+
+        loadData();
+    </script>
+</body>
+</html>

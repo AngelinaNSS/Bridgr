@@ -6,42 +6,296 @@
     <title>Dashboard | Bridgr</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; }
-        .navbar { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 0; }
-        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: bold; color: #1e3c72; }
-        .logo span { color: #ff6b4a; }
-        .nav-tabs { display: flex; gap: 8px; background: #f1f5f9; padding: 4px; border-radius: 16px; }
-        .nav-tab { padding: 8px 24px; border: none; background: transparent; cursor: pointer; border-radius: 12px; font-weight: 500; }
-        .nav-tab.active { background: white; color: #1e3c72; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .user-menu { display: flex; align-items: center; gap: 16px; }
-        .user-avatar { width: 40px; height: 40px; background: #1e3c72; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
-        .logout-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
-        .main-container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
-        .welcome-banner { background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%); color: white; padding: 32px; border-radius: 24px; margin-bottom: 32px; }
-        .campus-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 50px; font-size: 14px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f6f9;
+        }
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 16px;
+            flex-wrap: wrap;
+        }
+        .nav-tab {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-tab.active {
+            background: white;
+            color: #1e3c72;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #1e3c72;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .logout-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: #f1f5f9;
+        }
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        .welcome-banner {
+            background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 24px;
+            margin-bottom: 32px;
+        }
+        .campus-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 14px;
+        }
         .panel { display: none; }
         .panel.active-panel { display: block; }
-        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .card { background: white; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card h3 { color: #1e293b; margin-bottom: 16px; }
-        .project-item, .event-item, .carpool-item { border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
-        .project-title { font-weight: bold; color: #1e3c72; }
-        .looking-for { font-size: 13px; color: #ff6b4a; margin-top: 4px; }
-        .form-group { margin-bottom: 16px; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; }
-        button { background: #1e3c72; color: white; border: none; padding: 10px 20px; border-radius: 12px; cursor: pointer; }
-        .error-msg { color: red; padding: 10px; background: #fee; border-radius: 8px; margin: 10px 0; }
-        @media (max-width: 768px) { .two-columns { grid-template-columns: 1fr; } }
+        
+        /* Cards Grid */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .filter-group label {
+            font-weight: 500;
+            color: #475569;
+        }
+        .campus-filter {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .projects-grid, .carpool-grid, .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .project-card, .carpool-card, .event-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .project-card:hover, .carpool-card:hover, .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .event-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .campus-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .campus-deggendorf { background: #dbeafe; color: #1e40af; }
+        .campus-pfarrkirchen { background: #dcfce7; color: #166534; }
+        .campus-cham { background: #fef3c7; color: #92400e; }
+        .event-date-badge {
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .event-description {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 12px 0;
+        }
+        .attendance-section {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .attend-count {
+            font-size: 14px;
+        }
+        .attend-count span {
+            font-weight: 700;
+            color: #1e3c72;
+        }
+        .attend-btn {
+            background: none;
+            border: 1px solid #10b981;
+            color: #10b981;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .attend-btn:hover {
+            background: #10b981;
+            color: white;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .post-date {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .connect-btn {
+            background: none;
+            border: 1px solid #1e3c72;
+            color: #1e3c72;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .connect-btn:hover {
+            background: #1e3c72;
+            color: white;
+        }
+        
+        /* Form Card */
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .post-card h3 {
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        .form-row {
+            margin-bottom: 16px;
+        }
+        .form-row input, .form-row textarea, .form-row select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .submit-btn {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .projects-grid, .carpool-grid, .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <div class="nav-container">
-            <div class="logo">💡 Bridgr </div>
+            <div class="logo">💡 Bridgr</div>
             <div class="nav-tabs">
-                <button class="nav-tab active" data-panel="projects">📋 Projects</button>
-                <button class="nav-tab" data-panel="events">📅 Events</button>
+                <button class="nav-tab" data-panel="projects">📋 Projects</button>
+                <button class="nav-tab active" data-panel="events">📅 Events</button>
                 <button class="nav-tab" data-panel="carpool">🚗 Carpool</button>
             </div>
             <div class="user-menu">
@@ -55,46 +309,114 @@
         <div class="welcome-banner">
             <h1 id="welcomeName">Welcome to Bridgr!</h1>
             <p id="welcomeCampus"></p>
+            <p style="margin-top: 12px; font-size: 14px;">🌉 Find collaborators across campuses — Deggendorf, Pfarrkirchen, Cham</p>
         </div>
 
-        <div id="projectsPanel" class="panel active-panel">
-            <div class="two-columns">
-                <div class="card">
-                    <h3>📋 Active Projects</h3>
-                    <div id="projectsList">Loading projects...</div>
+        <!-- Projects Panel -->
+        <div id="projectsPanel" class="panel">
+            <div class="section-header">
+                <h2 style="color: #1e293b;">📋 Active Projects</h2>
+                <div class="filter-group">
+                    <label>Filter by:</label>
+                    <select id="campusFilter" class="campus-filter">
+                        <option value="all">All Campuses</option>
+                        <option value="Deggendorf">📍 Deggendorf</option>
+                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
+                        <option value="Cham">📍 Cham</option>
+                    </select>
                 </div>
-                <div class="card">
-                    <h3>+ Post a Project</h3>
-                    <div class="form-group"><input type="text" id="projectTitle" placeholder="Project title"></div>
-                    <div class="form-group"><textarea id="projectDesc" rows="3" placeholder="Description"></textarea></div>
-                    <div class="form-group"><input type="text" id="projectLookingFor" placeholder="Looking for..."></div>
-                    <button onclick="postProject()">Post Project</button>
+            </div>
+            <div id="projectsList" class="projects-grid">
+                <div class="empty-state">Loading projects...</div>
+            </div>
+            <div class="post-card">
+                <h3>➕ Post a New Project</h3>
+                <div class="form-row">
+                    <input type="text" id="projectTitle" placeholder="What's your project about?">
                 </div>
+                <div class="form-row">
+                    <textarea id="projectDesc" rows="3" placeholder="Describe what you're working on..."></textarea>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="projectLookingFor" placeholder="Who are you looking for?">
+                </div>
+                <button class="submit-btn" onclick="postProject()">Post Project →</button>
             </div>
         </div>
 
-        <div id="eventsPanel" class="panel">
-            <div class="two-columns">
-                <div class="card"><h3>📅 Upcoming Events</h3><div id="eventsList">Loading events...</div></div>
-                <div class="card"><h3>+ Add Event</h3>
-                    <div class="form-group"><input type="text" id="eventTitle" placeholder="Event name"></div>
-                    <div class="form-group"><input type="text" id="eventLocation" placeholder="Location"></div>
-                    <div class="form-group"><input type="date" id="eventDate"></div>
-                    <button onclick="addEvent()">Add Event</button>
+        <!-- Events Panel (with fake events + attendance) -->
+        <div id="eventsPanel" class="panel active-panel">
+            <div class="section-header">
+                <h2>📅 Upcoming Campus Events</h2>
+                <div class="filter-group">
+                    <label>Filter by:</label>
+                    <select id="eventCampusFilter" class="campus-filter">
+                        <option value="all">All Campuses</option>
+                        <option value="Deggendorf">📍 Deggendorf</option>
+                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
+                        <option value="Cham">📍 Cham</option>
+                    </select>
                 </div>
+            </div>
+            <div id="eventsList" class="events-grid"></div>
+            <div class="post-card">
+                <h3>➕ Propose an Event</h3>
+                <div class="form-row">
+                    <input type="text" id="eventTitle" placeholder="Event name">
+                </div>
+                <div class="form-row">
+                    <input type="text" id="eventLocation" placeholder="Campus (Deggendorf, Pfarrkirchen, Cham)">
+                </div>
+                <div class="form-row">
+                    <input type="date" id="eventDate">
+                </div>
+                <div class="form-row">
+                    <textarea id="eventDesc" rows="2" placeholder="Short description..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="addEvent()">Propose Event →</button>
             </div>
         </div>
 
+        <!-- Carpool Panel -->
         <div id="carpoolPanel" class="panel">
-            <div class="two-columns">
-                <div class="card"><h3>🚗 Available Rides</h3><div id="carpoolList">Loading carpools...</div></div>
-                <div class="card"><h3>+ Offer a Ride</h3>
-                    <div class="form-group"><select id="rideFrom"><option>Deggendorf</option><option>Pfarrkirchen</option><option>Cham</option></select></div>
-                    <div class="form-group"><select id="rideTo"><option>Deggendorf</option><option>Pfarrkirchen</option><option>Cham</option></select></div>
-                    <div class="form-group"><input type="text" id="rideDateTime" placeholder="Date/time"></div>
-                    <div class="form-group"><input type="number" id="rideSeats" placeholder="Seats"></div>
-                    <button onclick="offerRide()">Post Ride</button>
+            <div class="section-header">
+                <h2>🚗 Ride Share</h2>
+                <div class="filter-group">
+                    <label>Filter by:</label>
+                    <select id="carpoolFilter" class="campus-filter">
+                        <option value="all">All Rides</option>
+                        <option value="Deggendorf">From Deggendorf</option>
+                        <option value="Pfarrkirchen">From Pfarrkirchen</option>
+                        <option value="Cham">From Cham</option>
+                    </select>
                 </div>
+            </div>
+            <div id="carpoolList" class="carpool-grid"></div>
+            <div class="post-card">
+                <h3>➕ Offer a Ride</h3>
+                <div class="form-row">
+                    <select id="rideFrom">
+                        <option value="">From Campus</option>
+                        <option value="Deggendorf">📍 Deggendorf</option>
+                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
+                        <option value="Cham">📍 Cham</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <select id="rideTo">
+                        <option value="">To Campus</option>
+                        <option value="Deggendorf">📍 Deggendorf</option>
+                        <option value="Pfarrkirchen">📍 Pfarrkirchen</option>
+                        <option value="Cham">📍 Cham</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <input type="text" id="rideDateTime" placeholder="Date & time (e.g., Fri 5pm)">
+                </div>
+                <div class="form-row">
+                    <input type="number" id="rideSeats" placeholder="Seats available">
+                </div>
+                <button class="submit-btn" onclick="offerRide()">Post Ride →</button>
             </div>
         </div>
     </div>
@@ -102,169 +424,268 @@
     <script>
         const API_URL = '/api';
         let currentUser = null;
+        let allProjects = [];
+        let allCarpools = [];
+        
+        // Fake events with attendance tracking
+        let fakeEvents = [
+            {
+                id: 1001,
+                title: "🎉 Brazilian Night Party",
+                location: "Deggendorf",
+                event_date: "2026-06-15",
+                description: "Samba, caipirinhas, and great music! Come celebrate Brazilian culture with food and dancing.",
+                attending: 24
+            },
+            {
+                id: 1002,
+                title: "📝 CV Writing Workshop",
+                location: "Cham",
+                event_date: "2026-05-28",
+                description: "Learn how to create a professional CV that gets noticed. Bring your laptop!",
+                attending: 12
+            },
+            {
+                id: 1003,
+                title: "🧠 Trivia Night",
+                location: "Pfarrkirchen",
+                event_date: "2026-06-05",
+                description: "Test your knowledge on pop culture, history, and random facts. Prizes for winners!",
+                attending: 18
+            }
+        ];
+        
+        let userAttending = JSON.parse(localStorage.getItem('bridgr_attending') || '[]');
+
+        function saveAttending() {
+            localStorage.setItem('bridgr_attending', JSON.stringify(userAttending));
+        }
 
         async function loadData() {
             const user = localStorage.getItem('bridgr_user');
             if (!user) { window.location.href = 'signup.html'; return; }
             currentUser = JSON.parse(user);
-            document.getElementById('welcomeName').innerHTML = `Welcome, ${currentUser.firstName || currentUser.email}!`;
+            document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
             document.getElementById('welcomeCampus').innerHTML = `<span class="campus-badge">📍 ${currentUser.campus || 'THD'}</span>`;
-            document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
+            const initial = (currentUser.firstName?.charAt(0) || currentUser.email?.charAt(0) || 'U').toUpperCase();
+            document.getElementById('avatarInitials').innerText = initial;
+            
             await loadProjects();
-            await loadEvents();
+            await loadRealEvents();
+            displayEvents();
             await loadCarpools();
+            
+            document.getElementById('campusFilter').addEventListener('change', () => displayProjects());
+            document.getElementById('eventCampusFilter').addEventListener('change', () => displayEvents());
+            document.getElementById('carpoolFilter').addEventListener('change', () => displayCarpools());
         }
 
+        // ========== PROJECTS ==========
         async function loadProjects() {
             try {
                 const response = await fetch(`${API_URL}/projects`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const projects = await response.json();
-                if (projects.length === 0) {
-                    document.getElementById('projectsList').innerHTML = '<p>No projects yet. Be the first to post!</p>';
-                } else {
-                    document.getElementById('projectsList').innerHTML = projects.map(p => `
-                        <div class="project-item">
-                            <div class="project-title">${escapeHtml(p.title)}</div>
-                            <div>${escapeHtml(p.description || '')}</div>
-                            <div class="looking-for">🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</div>
-                            <div>📌 ${escapeHtml(p.campus)}</div>
-                        </div>
-                    `).join('');
-                }
+                allProjects = await response.json();
+                displayProjects();
             } catch (error) {
-                document.getElementById('projectsList').innerHTML = `<div class="error-msg">⚠️ Error loading projects: ${error.message}</div>`;
-                console.error('Error:', error);
+                document.getElementById('projectsList').innerHTML = '<div class="empty-state">⚠️ Could not load projects.</div>';
             }
+        }
+
+        function displayProjects() {
+            const filter = document.getElementById('campusFilter').value;
+            let filtered = allProjects;
+            if (filter !== 'all') filtered = allProjects.filter(p => p.campus === filter);
+            if (filtered.length === 0) {
+                document.getElementById('projectsList').innerHTML = '<div class="empty-state">✨ No projects yet. Be the first to post!</div>';
+                return;
+            }
+            document.getElementById('projectsList').innerHTML = filtered.map(p => {
+                const campusClass = p.campus === 'Deggendorf' ? 'campus-deggendorf' : (p.campus === 'Pfarrkirchen' ? 'campus-pfarrkirchen' : 'campus-cham');
+                return `
+                    <div class="project-card">
+                        <div class="card-header">
+                            <div class="event-title">${escapeHtml(p.title)}</div>
+                            <div class="campus-tag ${campusClass}">📍 ${escapeHtml(p.campus)}</div>
+                        </div>
+                        <div class="event-description">${escapeHtml(p.description || 'No description')}</div>
+                        <div class="attendance-section" style="background:#f1f5f9;">
+                            <span>🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="post-date">📅 ${new Date(p.created_at).toLocaleDateString()}</span>
+                            <button class="connect-btn" onclick="alert('📧 Contact ${escapeHtml(p.author_email)}')">Connect →</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         async function postProject() {
             const title = document.getElementById('projectTitle').value;
             if (!title) { alert('Enter a title'); return; }
-            try {
-                const response = await fetch(`${API_URL}/projects`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: title,
-                        description: document.getElementById('projectDesc').value,
-                        looking_for: document.getElementById('projectLookingFor').value,
-                        campus: currentUser.campus,
-                        author_email: currentUser.email
-                    })
-                });
-                if (response.ok) {
-                    document.getElementById('projectTitle').value = '';
-                    document.getElementById('projectDesc').value = '';
-                    document.getElementById('projectLookingFor').value = '';
-                    await loadProjects();
-                    alert('Project posted!');
-                } else {
-                    alert('Error posting project');
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
+            const response = await fetch(`${API_URL}/projects`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title, description: document.getElementById('projectDesc').value,
+                    looking_for: document.getElementById('projectLookingFor').value,
+                    campus: currentUser.campus, author_email: currentUser.email
+                })
+            });
+            if (response.ok) {
+                document.getElementById('projectTitle').value = '';
+                document.getElementById('projectDesc').value = '';
+                document.getElementById('projectLookingFor').value = '';
+                await loadProjects();
+                alert('✅ Project posted!');
             }
         }
 
-        async function loadEvents() {
+        // ========== EVENTS ==========
+        async function loadRealEvents() {
             try {
                 const response = await fetch(`${API_URL}/events`);
-                const events = await response.json();
-                if (events.length === 0) {
-                    document.getElementById('eventsList').innerHTML = '<p>No events yet.</p>';
-                } else {
-                    document.getElementById('eventsList').innerHTML = events.map(e => `
-                        <div class="event-item">
-                            <div class="project-title">${escapeHtml(e.title)}</div>
-                            <div>📍 ${escapeHtml(e.location || 'TBD')}</div>
-                            <div>📅 ${e.event_date || 'TBA'}</div>
-                        </div>
-                    `).join('');
-                }
+                const realEvents = await response.json();
+                // Merge fake events with real ones
+                allEvents = [...fakeEvents, ...realEvents];
+                displayEvents();
             } catch (error) {
-                document.getElementById('eventsList').innerHTML = '<p>Error loading events</p>';
+                allEvents = [...fakeEvents];
+                displayEvents();
             }
+        }
+
+        function displayEvents() {
+            const filter = document.getElementById('eventCampusFilter').value;
+            let filtered = allEvents;
+            if (filter !== 'all') filtered = allEvents.filter(e => e.location === filter);
+            if (filtered.length === 0) {
+                document.getElementById('eventsList').innerHTML = '<div class="empty-state">📅 No events found.</div>';
+                return;
+            }
+            document.getElementById('eventsList').innerHTML = filtered.map(e => {
+                const campusClass = e.location === 'Deggendorf' ? 'campus-deggendorf' : (e.location === 'Pfarrkirchen' ? 'campus-pfarrkirchen' : 'campus-cham');
+                const isAttending = userAttending.includes(e.id);
+                const attendingCount = e.attending || 0;
+                const date = new Date(e.event_date);
+                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                return `
+                    <div class="event-card">
+                        <div class="card-header">
+                            <div class="event-title">${escapeHtml(e.title)}</div>
+                            <div class="campus-tag ${campusClass}">📍 ${escapeHtml(e.location)}</div>
+                        </div>
+                        <div class="event-date-badge" style="display:inline-block; margin-bottom:12px;">📅 ${formattedDate}</div>
+                        <div class="event-description">${escapeHtml(e.description || 'No description yet.')}</div>
+                        <div class="attendance-section">
+                            <div class="attend-count">
+                                👥 <span>${attendingCount}</span> people attending
+                            </div>
+                            <button class="attend-btn" data-event-id="${e.id}" data-attending="${attendingCount}" onclick="toggleAttendance(${e.id}, this)">
+                                ${isAttending ? '✓ Going' : '+ Attend'}
+                            </button>
+                        </div>
+                        <div class="card-footer">
+                            <span class="post-date">📍 ${escapeHtml(e.location)} Campus</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleAttendance(eventId, button) {
+            if (userAttending.includes(eventId)) {
+                userAttending = userAttending.filter(id => id !== eventId);
+                const event = allEvents.find(e => e.id === eventId);
+                if (event && event.attending > 0) event.attending--;
+            } else {
+                userAttending.push(eventId);
+                const event = allEvents.find(e => e.id === eventId);
+                if (event) event.attending = (event.attending || 0) + 1;
+            }
+            saveAttending();
+            displayEvents();
         }
 
         async function addEvent() {
             const title = document.getElementById('eventTitle').value;
-            if (!title) { alert('Enter a title'); return; }
-            try {
-                await fetch(`${API_URL}/events`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        title: title,
-                        location: document.getElementById('eventLocation').value,
-                        event_date: document.getElementById('eventDate').value
-                    })
-                });
-                document.getElementById('eventTitle').value = '';
-                document.getElementById('eventLocation').value = '';
-                document.getElementById('eventDate').value = '';
-                await loadEvents();
-                alert('Event added!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
+            const location = document.getElementById('eventLocation').value;
+            const event_date = document.getElementById('eventDate').value;
+            const description = document.getElementById('eventDesc').value;
+            if (!title) { alert('Enter an event title'); return; }
+            const newEvent = {
+                id: Date.now(),
+                title, location, event_date, description,
+                attending: 0
+            };
+            fakeEvents.push(newEvent);
+            allEvents = [...fakeEvents];
+            displayEvents();
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventLocation').value = '';
+            document.getElementById('eventDate').value = '';
+            document.getElementById('eventDesc').value = '';
+            alert('✅ Event proposed!');
         }
 
+        // ========== CARPOOLS ==========
         async function loadCarpools() {
             try {
                 const response = await fetch(`${API_URL}/carpools`);
-                const carpools = await response.json();
-                if (carpools.length === 0) {
-                    document.getElementById('carpoolList').innerHTML = '<p>No rides offered yet.</p>';
-                } else {
-                    document.getElementById('carpoolList').innerHTML = carpools.map(r => `
-                        <div class="carpool-item">
-                            <div class="project-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div>
-                            <div>📅 ${escapeHtml(r.datetime)}</div>
-                            <div>💺 ${r.seats} seats</div>
-                        </div>
-                    `).join('');
-                }
+                allCarpools = await response.json();
+                displayCarpools();
             } catch (error) {
-                document.getElementById('carpoolList').innerHTML = '<p>Error loading rides</p>';
+                document.getElementById('carpoolList').innerHTML = '<div class="empty-state">⚠️ Could not load rides.</div>';
             }
+        }
+
+        function displayCarpools() {
+            const filter = document.getElementById('carpoolFilter').value;
+            let filtered = allCarpools;
+            if (filter !== 'all') filtered = allCarpools.filter(r => r.from_campus === filter);
+            if (filtered.length === 0) {
+                document.getElementById('carpoolList').innerHTML = '<div class="empty-state">🚗 No rides offered yet.</div>';
+                return;
+            }
+            document.getElementById('carpoolList').innerHTML = filtered.map(r => `
+                <div class="carpool-card">
+                    <div class="card-header">
+                        <div class="event-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div>
+                        <div class="event-date-badge">💺 ${r.seats} seats</div>
+                    </div>
+                    <div class="event-description" style="text-align:center;">🕐 ${escapeHtml(r.datetime || 'Time TBD')}</div>
+                    <div class="card-footer">
+                        <span class="post-date">📅 ${new Date(r.created_at).toLocaleDateString()}</span>
+                        <button class="connect-btn" onclick="alert('📧 Message the driver to claim a seat!')">Request →</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         async function offerRide() {
             const from_campus = document.getElementById('rideFrom').value;
             const to_campus = document.getElementById('rideTo').value;
-            const datetime = document.getElementById('rideDateTime').value;
-            const seats = document.getElementById('rideSeats').value;
-            if (!datetime || !seats) { alert('Fill all fields'); return; }
-            try {
-                await fetch(`${API_URL}/carpools`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ from_campus, to_campus, datetime, seats: parseInt(seats) })
-                });
-                document.getElementById('rideDateTime').value = '';
-                document.getElementById('rideSeats').value = '';
-                await loadCarpools();
-                alert('Ride posted!');
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
+            if (!from_campus || !to_campus) { alert('Select departure and destination'); return; }
+            await fetch(`${API_URL}/carpools`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    from_campus, to_campus,
+                    datetime: document.getElementById('rideDateTime').value,
+                    seats: parseInt(document.getElementById('rideSeats').value) || 1
+                })
             });
+            document.getElementById('rideFrom').value = '';
+            document.getElementById('rideTo').value = '';
+            document.getElementById('rideDateTime').value = '';
+            document.getElementById('rideSeats').value = '';
+            await loadCarpools();
+            alert('✅ Ride posted!');
         }
 
-        function logout() {
-            localStorage.removeItem('bridgr_user');
-            window.location.href = '../index.html';
-        }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        function logout() { localStorage.removeItem('bridgr_user'); window.location.href = '../index.html'; }
 
         document.querySelectorAll('.nav-tab').forEach(tab => {
             tab.addEventListener('click', () => {
