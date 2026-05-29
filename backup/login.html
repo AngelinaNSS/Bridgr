@@ -25,17 +25,15 @@
         }
         .logo {
             text-align: center;
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: bold;
             color: #1e3c72;
             margin-bottom: 8px;
         }
-        .logo span { color: #ffd700; }
         .subtitle {
             text-align: center;
             color: #64748b;
             margin-bottom: 32px;
-            font-size: 14px;
         }
         .form-group { margin-bottom: 20px; }
         label {
@@ -43,74 +41,62 @@
             margin-bottom: 8px;
             color: #1e293b;
             font-weight: 500;
-            font-size: 13px;
         }
         input {
             width: 100%;
             padding: 12px 16px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 14px;
-        }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+            font-size: 16px;
         }
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #1e3c72;
             color: white;
             border: none;
-            border-radius: 40px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             margin-top: 12px;
         }
-        .btn-login:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-        }
+        .btn-login:hover { background: #2b4c7c; }
         .signup-link {
             text-align: center;
             margin-top: 24px;
             color: #64748b;
-            font-size: 14px;
         }
         .signup-link a {
-            color: #667eea;
+            color: #ff6b4a;
             text-decoration: none;
             font-weight: 600;
         }
-        .forgot-link {
-            text-align: right;
-            margin-top: 8px;
-        }
-        .forgot-link a {
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 12px;
+        .error-msg {
+            background: #fee;
+            color: #c00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="login-card">
-        <div class="logo">Bridgr<span>⚡</span></div>
-        <div class="subtitle">Welcome back</div>
+        <div class="logo">💡 Bridgr</div>
+        <div class="subtitle">Welcome back!</div>
+
+        <div id="errorMsg" class="error-msg" style="display: none;"></div>
 
         <form id="loginForm">
             <div class="form-group">
                 <label>Email address</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" required placeholder="student@th-deggendorf.de">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="password" required>
-            </div>
-            <div class="forgot-link">
-                <a href="#">Forgot password?</a>
+                <input type="password" id="password" required placeholder="••••••••">
             </div>
             <button type="submit" class="btn-login">Log In →</button>
         </form>
@@ -121,14 +107,39 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const API_URL = '/api';
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const user = localStorage.getItem('bridgr_user');
-            if (user) {
-                window.location.href = 'dashboard.html';
-            } else {
-                alert('No account found. Please sign up first.');
-                window.location.href = 'signup.html';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            document.getElementById('errorMsg').style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_URL}/users`);
+                const users = await response.json();
+                
+                const user = users.find(u => u.email === email);
+                
+                if (user) {
+                    localStorage.setItem('bridgr_user', JSON.stringify({
+                        id: user.id,
+                        email: user.email,
+                        firstName: user.first_name,
+                        lastName: user.last_name,
+                        campus: user.campus,
+                        skills: user.skills
+                    }));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    document.getElementById('errorMsg').textContent = 'No account found with that email. Please sign up first.';
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMsg').textContent = 'Error connecting to server. Make sure backend is running.';
+                document.getElementById('errorMsg').style.display = 'block';
             }
         });
     </script>

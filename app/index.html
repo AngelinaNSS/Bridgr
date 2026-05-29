@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bridgr | Connect THD Campuses</title>
+    <title>Bridgr | Internal Talent Marketplace for SMEs</title>
     <style>
         * {
             margin: 0;
@@ -12,15 +12,9 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
         }
 
         /* Navbar */
@@ -28,39 +22,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            color: white;
+            padding: 24px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .logo {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
         }
 
         .logo span {
-            color: #ff6b4a;
+            color: #ffd700;
         }
 
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 16px;
             align-items: center;
         }
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
         .btn-outline {
-            border: 2px solid white;
-            padding: 8px 24px;
-            border-radius: 50px;
             background: transparent;
+            border: 2px solid white;
+            padding: 10px 28px;
+            border-radius: 40px;
             color: white;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .btn-outline:hover {
@@ -69,63 +62,82 @@
         }
 
         .btn-primary {
-            background: #ff6b4a;
+            background: #ffd700;
             border: none;
-            padding: 8px 24px;
-            border-radius: 50px;
-            color: white;
+            padding: 10px 28px;
+            border-radius: 40px;
+            color: #1a2b4c;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .btn-primary:hover {
-            background: #ff5230;
-            transform: scale(1.05);
+            background: #ffed4a;
+            transform: scale(1.02);
         }
 
-        /* Hero section */
+        /* Hero Section */
         .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px 80px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin: 60px 0;
-            color: white;
+            gap: 60px;
         }
 
         .hero-content {
             flex: 1;
+            color: white;
         }
 
         .hero-content h1 {
             font-size: 52px;
-            margin-bottom: 20px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
         }
 
         .hero-content p {
-            font-size: 20px;
-            margin-bottom: 30px;
-            opacity: 0.9;
+            font-size: 18px;
+            line-height: 1.6;
+            opacity: 0.95;
+            margin-bottom: 32px;
         }
 
-        .hero-stats {
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .stats {
             display: flex;
             gap: 40px;
             margin-top: 40px;
         }
 
-        .stat {
-            text-align: center;
+        .stat-item {
+            text-align: left;
         }
 
         .stat-number {
-            font-size: 36px;
-            font-weight: bold;
+            font-size: 32px;
+            font-weight: 800;
         }
 
         .stat-label {
             font-size: 14px;
             opacity: 0.8;
+            margin-top: 4px;
         }
 
         .hero-image {
@@ -133,32 +145,55 @@
             text-align: center;
         }
 
-        /* Features */
-        .features {
-            background: white;
-            padding: 60px 0;
-            border-radius: 40px;
-            margin-top: 40px;
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
-        .features h2 {
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 80px 40px;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
             text-align: center;
             font-size: 36px;
-            color: #1e293b;
-            margin-bottom: 40px;
+            font-weight: 700;
+            color: #1a2b4c;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 60px;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            max-width: 1000px;
-            margin: 0 auto;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
 
         .feature-card {
             text-align: center;
-            padding: 30px;
+            padding: 32px 24px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
         }
 
         .feature-icon {
@@ -167,112 +202,206 @@
         }
 
         .feature-card h3 {
-            color: #1e3c72;
-            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2b4c;
+            margin-bottom: 12px;
         }
 
         .feature-card p {
             color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Differentiator Section */
+        .differentiator {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 80px 40px;
+        }
+
+        .differentiator-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .differentiator-badge {
+            background: #dc2626;
+            color: white;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .differentiator h2 {
+            font-size: 32px;
+            color: #1a2b4c;
+            margin-bottom: 20px;
+        }
+
+        .differentiator p {
+            font-size: 18px;
+            color: #475569;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: #1a2b4c;
+            padding: 80px 40px;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            color: #94a3b8;
+            margin-bottom: 32px;
+            font-size: 18px;
+        }
+
+        .cta .btn-primary {
+            background: #ffd700;
+            color: #1a2b4c;
+            padding: 14px 40px;
+            font-size: 16px;
         }
 
         /* Footer */
         .footer {
-            text-align: center;
+            background: #0f172a;
             padding: 40px;
-            color: white;
-            opacity: 0.8;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .hero {
                 flex-direction: column;
                 text-align: center;
+                padding: 40px 20px;
             }
             .hero-content h1 {
                 font-size: 36px;
             }
-            .nav-links {
-                gap: 15px;
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                justify-content: center;
+            }
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <nav class="navbar">
-            <div class="logo">Bridgr<span>💡</span></div>
-            <div class="nav-links">
-                <a href="#" id="features-link">Features</a>
-                <button class="btn-outline" onclick="window.location.href='pages/login.html'">Log In</button>
-                <button class="btn-primary" onclick="window.location.href='pages/signup.html'">Sign Up</button>
-            </div>
-        </nav>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Bridgr<span>⚡</span></div>
+        <div class="nav-links">
+            <button class="btn-outline" onclick="window.location.href='pages/login.html'">Log in</button>
+            <button class="btn-primary" onclick="window.location.href='pages/signup.html'">Get started →</button>
+        </div>
+    </div>
 
-        <div class="hero">
-            <div class="hero-content">
-                <h1>Connect THD's three campuses </h1>
-                <p>Deggendorf · Pfarrkirchen · Cham</p>
-                <button class="btn-primary" style="padding: 14px 40px; font-size: 18px;" onclick="window.location.href='pages/signup.html'">
-                    Get Started →
-                </button>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">Campuses</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">10,000+</div>
-                        <div class="stat-label">Students</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">∞</div>
-                        <div class="stat-label">Possibilities</div>
-                    </div>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🚀 Trusted by German SMEs</div>
+            <h1>Keep your company running during a hiring freeze</h1>
+            <p>When you can't hire externally, use the talent you already have. Bridgr helps you find internal experts across your offices — saving time, money, and valuable employees.</p>
+            <button class="btn-primary" style="padding: 14px 36px; font-size: 16px;" onclick="window.location.href='pages/signup.html'">Start free trial →</button>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">€47k</div>
+                    <div class="stat-label">Saved per month</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.5M</div>
+                    <div class="stat-label">German SMEs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">33%</div>
+                    <div class="stat-label">Plan job cuts in 2026</div>
                 </div>
             </div>
-            <div class="hero-image">
-                <div style="font-size: 120px;">💡</div>
+        </div>
+        <div class="hero-image">
+            <div style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; backdrop-filter: blur(10px);">
+                <div style="font-size: 80px; margin-bottom: 20px;">🏢 → 🤝 → 💡</div>
+                <div style="color: white; font-size: 14px;">Munich Office → Hamburg Office → Problem Solved</div>
             </div>
         </div>
     </div>
 
-    <div class="features" id="features">
-        <div class="container">
-            <h2>Everything you need to collaborate</h2>
+    <!-- Features Section -->
+    <div class="features">
+        <div class="features-container">
+            <h2 class="section-title">Everything you need to collaborate internally</h2>
+            <p class="section-subtitle">No external consultants. No expensive software. Just your people.</p>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">👤</div>
-                    <h3>Student Profiles</h3>
-                    <p>Skills, campus, course — visible across all three campuses</p>
+                    <div class="feature-icon">👥</div>
+                    <h3>Internal Talent Matching</h3>
+                    <p>Find colleagues with the right skills across any office. Search by skill, department, or location.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📋</div>
-                    <h3>Project Board</h3>
-                    <p>Find teammates or post your own project</p>
+                    <div class="feature-icon">🔴</div>
+                    <h3>Hiring Freeze Mode</h3>
+                    <p>External hiring is paused. Internal collaboration becomes the priority. Save thousands per project.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📅</div>
-                    <h3>Events Feed</h3>
-                    <p>Never miss a hackathon or workshop</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🚗</div>
-                    <h3>Carpool Finder</h3>
-                    <p>Share rides between campuses</p>
+                    <div class="feature-icon">💬</div>
+                    <h3>Direct Messaging</h3>
+                    <p>Connect instantly with colleagues. No more chasing people through email or Slack.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Differentiator Section -->
+    <div class="differentiator">
+        <div class="differentiator-container">
+            <div class="differentiator-badge">Why Bridgr?</div>
+            <h2>Built for SMEs during hiring freezes</h2>
+            <p>Leapsome and Sprad are built for growth and external hiring. Bridgr is built for survival — helping you do more with the people you already have.</p>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta">
+        <h2>Ready to unlock your internal talent?</h2>
+        <p>Join companies using Bridgr to save millions on external hiring.</p>
+        <button class="btn-primary" onclick="window.location.href='pages/signup.html'">Get started — it's free →</button>
+    </div>
+
+    <!-- Footer -->
     <div class="footer">
-        <p>Bridgr — One platform, three campuses, endless collaborations</p>
+        <p>© 2026 Bridgr — Internal Talent Marketplace for German SMEs</p>
     </div>
 
     <script>
-        document.getElementById('features-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-        });
+        // Check if user is already logged in
+        const user = localStorage.getItem('bridgr_user');
+        if (user) {
+            // Redirect to dashboard if already logged in
+            window.location.href = 'pages/dashboard.html';
+        }
     </script>
 </body>
 </html>

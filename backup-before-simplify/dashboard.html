@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bridgr | Office Collaboration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f4f8;
+        }
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e3c72;
+        }
+        .logo span { color: #ff6b4a; }
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 40px;
+            flex-wrap: wrap;
+        }
+        .nav-tab {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 32px;
+            font-weight: 500;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .nav-tab.active {
+            background: white;
+            color: #1e3c72;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .message-badge {
+            background: #ff6b4a;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+            position: absolute;
+            top: -4px;
+            right: -4px;
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #ff6b4a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .logout-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover { background: #f1f5f9; }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, #1e3c72 0%, #2b4c7c 100%);
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 32px;
+            color: white;
+        }
+        .welcome-banner h1 { font-size: 28px; margin-bottom: 8px; }
+        .office-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        
+        /* Messaging Panel */
+        .messages-container {
+            display: flex;
+            gap: 24px;
+            height: calc(100vh - 280px);
+            min-height: 500px;
+        }
+        .conversations-list {
+            width: 35%;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            overflow-y: auto;
+        }
+        .conversation-item {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .conversation-item:hover { background: #f8fafc; }
+        .conversation-item.active { background: #e0e7ff; }
+        .conversation-name { font-weight: 600; color: #1e293b; }
+        .conversation-preview { font-size: 12px; color: #64748b; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .conversation-time { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+        .unread-badge { background: #ff6b4a; color: white; border-radius: 20px; padding: 2px 8px; font-size: 10px; display: inline-block; margin-top: 4px; }
+        
+        .chat-area {
+            width: 65%;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; font-weight: 600; color: #1e293b; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message-bubble { max-width: 70%; padding: 10px 14px; border-radius: 18px; font-size: 14px; }
+        .message-sent { background: #1e3c72; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message-received { background: #f1f5f9; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message-time { font-size: 10px; margin-top: 4px; opacity: 0.7; }
+        .chat-input-area { padding: 16px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; }
+        .chat-input { flex: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 40px; font-size: 14px; }
+        .send-btn { background: #1e3c72; color: white; border: none; padding: 8px 24px; border-radius: 40px; cursor: pointer; }
+        .send-btn:hover { background: #ff6b4a; }
+        .empty-chat { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; }
+        
+        .profile-card, .history-card, .employees-card, .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .profile-name { font-size: 20px; font-weight: 700; color: #1e293b; }
+        .edit-profile-btn { background: none; border: 1px solid #cbd5e1; padding: 6px 16px; border-radius: 40px; cursor: pointer; font-size: 12px; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag { background: #e0e7ff; color: #1e3c72; padding: 4px 12px; border-radius: 40px; font-size: 12px; }
+        .bio-text { color: #475569; font-size: 14px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-top: 12px; }
+        
+        .opportunities-grid { display: grid; gap: 20px; }
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .project-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .project-title { font-size: 17px; font-weight: 700; color: #1e293b; }
+        .office-tag { font-size: 11px; padding: 4px 12px; border-radius: 40px; }
+        .office-deggendorf { background: #dbeafe; color: #1e40af; }
+        .office-pfarrkirchen { background: #dcfce7; color: #166534; }
+        .office-cham { background: #fef3c7; color: #92400e; }
+        .looking-for { background: #f1f5f9; padding: 8px 12px; border-radius: 12px; margin: 12px 0; font-size: 13px; }
+        .looking-for span { font-weight: 600; color: #ff6b4a; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+        .connect-btn { background: none; border: 1px solid #1e3c72; color: #1e3c72; padding: 6px 16px; border-radius: 40px; cursor: pointer; }
+        .connect-btn:hover { background: #1e3c72; color: white; }
+        .submit-btn { background: #1e3c72; color: white; border: none; padding: 12px 24px; border-radius: 40px; cursor: pointer; }
+        .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+        .form-row { margin-bottom: 16px; }
+        .form-row input, .form-row textarea, .form-row select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 12px; }
+        
+        /* Language Partner Card */
+        .language-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 16px;
+        }
+        .language-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .language-name { font-size: 17px; font-weight: 700; color: #1e293b; }
+        .language-badge { background: #e0e7ff; padding: 4px 12px; border-radius: 40px; font-size: 12px; }
+        
+        .panel { display: none; }
+        .panel.active-panel { display: block; }
+        
+        @media (max-width: 900px) {
+            .two-columns { grid-template-columns: 1fr; }
+            .messages-container { flex-direction: column; height: auto; }
+            .conversations-list, .chat-area { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">Bridgr<span>🌉</span></div>
+            <div class="nav-tabs">
+                <button class="nav-tab" data-panel="opportunities">📋 Opportunities</button>
+                <button class="nav-tab" data-panel="events">📅 Events</button>
+                <button class="nav-tab" data-panel="carpool">🚗 Carpool</button>
+                <button class="nav-tab" data-panel="language">🗣️ Language</button>
+                <button class="nav-tab" data-panel="messages" id="messagesTab">💬 Messages <span id="unreadCount" class="message-badge" style="display: none;">0</span></button>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar" id="avatarInitials">U</div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="welcome-banner">
+            <h1 id="welcomeName">Welcome to Bridgr</h1>
+            <p>Connecting employees across multiple office locations — Munich, Hamburg, Berlin</p>
+            <div class="office-badge" id="campusBadge">📍 Loading...</div>
+        </div>
+
+        <!-- Opportunities Panel -->
+        <div id="opportunitiesPanel" class="panel">
+            <div class="two-columns">
+                <div>
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-name" id="profileName">Employee Name</div>
+                            <button class="edit-profile-btn" onclick="editProfile()">✎ Edit Profile</button>
+                        </div>
+                        <div class="skill-tags" id="skillsList"></div>
+                        <div class="bio-text" id="userBio"></div>
+                    </div>
+                </div>
+                <div>
+                    <div id="activeOpportunitiesList" class="opportunities-grid"></div>
+                    <div class="post-card">
+                        <h3>➕ Post a New Project</h3>
+                        <div class="form-row"><input type="text" id="projectTitle" placeholder="Project title"></div>
+                        <div class="form-row"><textarea id="projectDesc" rows="2" placeholder="Describe your project"></textarea></div>
+                        <div class="form-row"><input type="text" id="projectLookingFor" placeholder="Who are you looking for?"></div>
+                        <button class="submit-btn" onclick="postProject()">Post Project →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Panel - FULLY RESTORED -->
+        <div id="eventsPanel" class="panel">
+            <div class="history-card" style="margin-bottom: 20px;">
+                <div class="history-title">📅 Upcoming Office Events</div>
+                <div id="eventsList" class="opportunities-grid"></div>
+            </div>
+            <div class="post-card">
+                <h3>➕ Propose an Event</h3>
+                <div class="form-row"><input type="text" id="eventTitle" placeholder="Event name"></div>
+                <div class="form-row"><input type="text" id="eventLocation" placeholder="Office (Munich, Hamburg, Berlin)"></div>
+                <div class="form-row"><input type="date" id="eventDate"></div>
+                <div class="form-row"><textarea id="eventDesc" rows="2" placeholder="Short description"></textarea></div>
+                <button class="submit-btn" onclick="addEvent()">Propose Event →</button>
+            </div>
+        </div>
+
+        <!-- Carpool Panel - FULLY RESTORED -->
+        <div id="carpoolPanel" class="panel">
+            <div class="history-card" style="margin-bottom: 20px;">
+                <div class="history-title">🚗 Ride Share</div>
+                <div id="carpoolList" class="opportunities-grid"></div>
+            </div>
+            <div class="post-card">
+                <h3>➕ Offer a Ride</h3>
+                <div class="form-row"><select id="rideFrom"><option value="">From Office</option><option value="Munich">📍 Munich</option><option value="Hamburg">📍 Hamburg</option><option value="Berlin">📍 Berlin</option></select></div>
+                <div class="form-row"><select id="rideTo"><option value="">To Office</option><option value="Munich">📍 Munich</option><option value="Hamburg">📍 Hamburg</option><option value="Berlin">📍 Berlin</option></select></div>
+                <div class="form-row"><input type="text" id="rideDateTime" placeholder="Date & time"></div>
+                <div class="form-row"><input type="number" id="rideSeats" placeholder="Seats available"></div>
+                <div class="form-row"><input type="text" id="rideDriver" placeholder="Your name"></div>
+                <button class="submit-btn" onclick="offerRide()">Post Ride →</button>
+            </div>
+        </div>
+
+        <!-- Language Panel -->
+        <div id="languagePanel" class="panel">
+            <div class="two-columns">
+                <div>
+                    <div class="history-card">
+                        <div class="history-title">🗣️ Language Partners</div>
+                        <div id="languagePartnersList"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="post-card">
+                        <h3>➕ I want to practice a language</h3>
+                        <div class="form-row"><select id="nativeLanguage"><option value="">My native language</option><option>🇩🇪 German</option><option>🇬🇧 English</option><option>🇪🇸 Spanish</option><option>🇫🇷 French</option><option>🇮🇹 Italian</option></select></div>
+                        <div class="form-row"><select id="practiceLanguage"><option value="">I want to practice</option><option>🇩🇪 German</option><option>🇬🇧 English</option><option>🇪🇸 Spanish</option><option>🇫🇷 French</option><option>🇮🇹 Italian</option></select></div>
+                        <div class="form-row"><input type="text" id="languageLevel" placeholder="Your level (Beginner/Intermediate/Advanced)"></div>
+                        <div class="form-row"><textarea id="languageMessage" rows="2" placeholder="Say something about yourself"></textarea></div>
+                        <button class="submit-btn" onclick="postLanguageExchange()">Find Language Partner →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Panel -->
+        <div id="messagesPanel" class="panel">
+            <div class="messages-container">
+                <div class="conversations-list" id="conversationsList"></div>
+                <div class="chat-area" id="chatArea">
+                    <div class="empty-chat">Select a conversation to start messaging</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+        let allOpportunities = [];
+        let currentConversation = null;
+        
+        // Messaging System
+        let conversations = JSON.parse(localStorage.getItem('bridgr_conversations')) || [];
+        let userSkills = ['UI/UX Design', 'Frontend Development'];
+        let userBio = 'Looking for collaborators across officees!';
+        
+        // Events data
+        let fakeEvents = [
+            { id: 1, title: "🎉 Brazilian Night Party", location: "Munich", event_date: "2026-06-15", description: "Samba, caipirinhas, and great music! Come celebrate Brazilian culture.", attending: 24 },
+            { id: 2, title: "📝 CV Writing Workshop", location: "Berlin", event_date: "2026-05-28", description: "Learn how to create a professional CV that gets noticed.", attending: 12 },
+            { id: 3, title: "🧠 Trivia Night", location: "Hamburg", event_date: "2026-06-05", description: "Test your knowledge on pop culture and history. Prizes for winners!", attending: 18 }
+        ];
+        
+        // Carpool data
+        let sampleRides = [
+            { id: 1, from_campus: "Munich", to_campus: "Hamburg", datetime: "Friday June 5th, 2:00 PM", seats: 3, driver: "Lukas", gasContribution: "€5" },
+            { id: 2, from_campus: "Berlin", to_campus: "Munich", datetime: "Monday June 8th, 9:00 AM", seats: 2, driver: "Maria", gasContribution: "€4" },
+            { id: 3, from_campus: "Hamburg", to_campus: "Berlin", datetime: "Wednesday June 10th, 1:00 PM", seats: 4, driver: "Thomas", gasContribution: "€6" }
+        ];
+        
+        // Language partners
+        let languagePartners = [
+            { name: "Sophie M.", office: "Munich", native: "🇩🇪 German", practice: "🇬🇧 English", level: "Intermediate", message: "I want to improve my English conversation skills. Can help with German!" },
+            { name: "Carlos R.", office: "Hamburg", native: "🇪🇸 Spanish", practice: "🇩🇪 German", level: "Beginner", message: "Just moved to Germany, need help with everyday German. I offer Spanish!" }
+        ];
+
+        let userAttending = JSON.parse(localStorage.getItem('bridgr_attending') || '[]');
+
+        function saveConversations() { localStorage.setItem('bridgr_conversations', JSON.stringify(conversations)); updateUnreadBadge(); }
+        function updateUnreadBadge() {
+            const totalUnread = conversations.reduce((sum, c) => sum + (c.unread || 0), 0);
+            const badge = document.getElementById('unreadCount');
+            if (totalUnread > 0) { badge.style.display = 'inline-block'; badge.innerText = totalUnread > 9 ? '9+' : totalUnread; }
+            else { badge.style.display = 'none'; }
+        }
+
+        function startConversation(withPerson) {
+            let existingConv = conversations.find(c => c.with === withPerson);
+            if (!existingConv) {
+                existingConv = { with: withPerson, messages: [], unread: 0, lastUpdated: new Date().toISOString() };
+                conversations.unshift(existingConv);
+                saveConversations();
+            }
+            currentConversation = existingConv;
+            if (existingConv.unread > 0) { existingConv.unread = 0; saveConversations(); }
+            renderConversationsList();
+            renderChatArea();
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-panel="messages"]').classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+            document.getElementById('messagesPanel').classList.add('active-panel');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !currentConversation) return;
+            currentConversation.messages.push({ from: currentUser.email, text: text, time: new Date().toISOString() });
+            currentConversation.lastUpdated = new Date().toISOString();
+            saveConversations();
+            input.value = '';
+            renderChatArea();
+            renderConversationsList();
+        }
+
+        function renderConversationsList() {
+            const container = document.getElementById('conversationsList');
+            if (conversations.length === 0) { container.innerHTML = '<div class="empty-state" style="padding: 40px;">No messages yet. Click "Message" on any project or partner to start a conversation.</div>'; return; }
+            container.innerHTML = conversations.map(conv => `<div class="conversation-item ${currentConversation?.with === conv.with ? 'active' : ''}" onclick="selectConversation('${escapeHtml(conv.with)}')"><div class="conversation-name">${escapeHtml(conv.with)}</div><div class="conversation-preview">${conv.messages.length > 0 ? escapeHtml(conv.messages[conv.messages.length-1].text.substring(0, 50)) : 'Start a conversation'}</div><div class="conversation-time">${new Date(conv.lastUpdated).toLocaleDateString()}</div>${conv.unread > 0 ? `<div class="unread-badge">${conv.unread} new</div>` : ''}</div>`).join('');
+        }
+
+        function selectConversation(withPerson) {
+            const conv = conversations.find(c => c.with === withPerson);
+            if (conv) { currentConversation = conv; if (conv.unread > 0) { conv.unread = 0; saveConversations(); } renderConversationsList(); renderChatArea(); }
+        }
+
+        function renderChatArea() {
+            const container = document.getElementById('chatArea');
+            if (!currentConversation) { container.innerHTML = '<div class="empty-chat">Select a conversation to start messaging</div>'; return; }
+            const messagesHtml = currentConversation.messages.map(msg => `<div class="message-bubble ${msg.from === currentUser.email ? 'message-sent' : 'message-received'}">${escapeHtml(msg.text)}<div class="message-time">${new Date(msg.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div>`).join('');
+            container.innerHTML = `<div class="chat-header">💬 Chat with ${escapeHtml(currentConversation.with)}</div><div class="chat-messages" id="chatMessages">${messagesHtml || '<div class="empty-chat" style="height:100%;">No messages yet. Say hello!</div>'}</div><div class="chat-input-area"><input type="text" class="chat-input" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key===\'Enter\') sendMessage()"><button class="send-btn" onclick="sendMessage()">Send</button></div>`;
+            const messagesDiv = document.getElementById('chatMessages'); if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function loadData() {
+            const user = localStorage.getItem('bridgr_user');
+            if (!user) { window.location.href = 'signup.html'; return; }
+            currentUser = JSON.parse(user);
+            document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
+            document.getElementById('campusBadge').innerHTML = `📍 ${currentUser.campus || 'Company'} Office`;
+            document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
+            document.getElementById('profileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
+            const savedSkills = localStorage.getItem('bridgr_skills'); if (savedSkills) userSkills = JSON.parse(savedSkills);
+            const savedBio = localStorage.getItem('bridgr_bio'); if (savedBio) userBio = savedBio;
+            document.getElementById('skillsList').innerHTML = userSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
+            document.getElementById('userBio').innerHTML = escapeHtml(userBio);
+            await loadOpportunities();
+            displayActiveOpportunities();
+            displayEvents();
+            displayCarpools();
+            displayLanguagePartners();
+            renderConversationsList();
+            updateUnreadBadge();
+        }
+
+        function displayEvents() {
+            const eventsHtml = fakeEvents.map(e => `<div class="project-card"><div class="card-header"><div class="project-title">${escapeHtml(e.title)}</div><div class="office-tag office-deggendorf">📍 ${escapeHtml(e.location)}</div></div><div class="event-description">${escapeHtml(e.description)}</div><div class="looking-for">📅 ${new Date(e.event_date).toLocaleDateString()} | 👥 ${e.attending} attending</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(e.title)} Organizer')">Message Organizer →</button></div></div>`).join('');
+            document.getElementById('eventsList').innerHTML = eventsHtml || '<div class="empty-state">No events yet.</div>';
+        }
+
+        function addEvent() {
+            const title = document.getElementById('eventTitle').value;
+            const location = document.getElementById('eventLocation').value;
+            const event_date = document.getElementById('eventDate').value;
+            const description = document.getElementById('eventDesc').value;
+            if (!title) { alert("Enter event title"); return; }
+            fakeEvents.unshift({ id: Date.now(), title, location, event_date, description, attending: 0 });
+            displayEvents();
+            document.getElementById('eventTitle').value = ''; document.getElementById('eventLocation').value = ''; document.getElementById('eventDate').value = ''; document.getElementById('eventDesc').value = '';
+            alert("✅ Event added!");
+        }
+
+        function displayCarpools() {
+            const carpoolsHtml = sampleRides.map(r => `<div class="project-card"><div class="card-header"><div class="project-title">🚗 ${escapeHtml(r.from_campus)} → ${escapeHtml(r.to_campus)}</div><div class="office-tag office-deggendorf">💺 ${r.seats} seats</div></div><div class="looking-for">🕐 ${escapeHtml(r.datetime)}</div><div class="looking-for">💰 Gas contribution: ${r.gasContribution} (shared among riders)</div><div class="card-footer"><span>Driver: ${escapeHtml(r.driver)}</span><button class="connect-btn" onclick="startConversation('${escapeHtml(r.driver)}')">Message Driver →</button></div></div>`).join('');
+            document.getElementById('carpoolList').innerHTML = carpoolsHtml || '<div class="empty-state">No rides offered yet.</div>';
+        }
+
+        function offerRide() {
+            const from_campus = document.getElementById('rideFrom').value;
+            const to_campus = document.getElementById('rideTo').value;
+            const datetime = document.getElementById('rideDateTime').value;
+            const seats = document.getElementById('rideSeats').value;
+            const driver = document.getElementById('rideDriver').value;
+            if (!from_campus || !to_campus) { alert("Select departure and destination"); return; }
+            sampleRides.unshift({ id: Date.now(), from_campus, to_campus, datetime, seats: parseInt(seats) || 2, driver: driver || currentUser.firstName || "Employee", gasContribution: "€5" });
+            displayCarpools();
+            document.getElementById('rideFrom').value = ''; document.getElementById('rideTo').value = ''; document.getElementById('rideDateTime').value = ''; document.getElementById('rideSeats').value = ''; document.getElementById('rideDriver').value = '';
+            alert("✅ Ride offered!");
+        }
+
+        function displayLanguagePartners() {
+            const partnersHtml = languagePartners.map(p => `<div class="language-card"><div class="language-header"><div class="language-name">${escapeHtml(p.name)}</div><div class="language-badge">📍 ${escapeHtml(p.office)}</div></div><div class="looking-for">🗣️ Native: ${escapeHtml(p.native)} | Learning: ${escapeHtml(p.practice)} (${escapeHtml(p.level)})</div><div class="looking-for">💬 "${escapeHtml(p.message)}"</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(p.name)}')">Message →</button></div></div>`).join('');
+            document.getElementById('languagePartnersList').innerHTML = partnersHtml || '<div class="empty-state">No language partners yet.</div>';
+        }
+
+        function postLanguageExchange() {
+            const nativeLang = document.getElementById('nativeLanguage').value;
+            const practiceLang = document.getElementById('practiceLanguage').value;
+            if (!nativeLang || !practiceLang) { alert("Please select languages"); return; }
+            languagePartners.unshift({ name: currentUser.firstName || currentUser.email.split('@')[0], office: currentUser.campus || "Company", native: nativeLang, practice: practiceLang, level: document.getElementById('languageLevel').value || "Not specified", message: document.getElementById('languageMessage').value || "Looking for a language partner!" });
+            displayLanguagePartners();
+            document.getElementById('nativeLanguage').value = ''; document.getElementById('practiceLanguage').value = ''; document.getElementById('languageLevel').value = ''; document.getElementById('languageMessage').value = '';
+            alert("✅ Language exchange posted!");
+        }
+
+        function editProfile() {
+            const newSkills = prompt("Enter your skills (comma separated):", userSkills.join(', '));
+            if (newSkills) { userSkills = newSkills.split(',').map(s => s.trim()); localStorage.setItem('bridgr_skills', JSON.stringify(userSkills)); document.getElementById('skillsList').innerHTML = userSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join(''); }
+            const newBio = prompt("Enter your bio:", userBio);
+            if (newBio) { userBio = newBio; localStorage.setItem('bridgr_bio', userBio); document.getElementById('userBio').innerHTML = escapeHtml(userBio); }
+            alert("✅ Profile updated!");
+        }
+
+        async function loadOpportunities() {
+            try { const response = await fetch(`${API_URL}/opportunities`); allOpportunities = await response.json(); displayActiveOpportunities(); } catch(e) { console.error(e); }
+        }
+
+        function displayActiveOpportunities() {
+            const myOpportunities = allOpportunities.filter(p => p.author_email === currentUser.email);
+            const otherOpportunities = allOpportunities.filter(p => p.author_email !== currentUser.email);
+            let html = '';
+            if (myOpportunities.length) html += `<h3 style="margin-bottom:12px;">📌 My Active Opportunities</h3>` + myOpportunities.map(p => renderProjectCard(p)).join('');
+            if (otherOpportunities.length) html += `<h3 style="margin:24px 0 12px;">🤝 Opportunities Looking for Collaborators</h3>` + otherOpportunities.map(p => renderProjectCard(p)).join('');
+            if (!allOpportunities.length) html = `<div class="empty-state">✨ No opportunities yet. Be the first to post!</div>`;
+            document.getElementById('activeOpportunitiesList').innerHTML = html;
+        }
+
+        function renderProjectCard(p) {
+            const officeClass = p.office === 'Munich' ? 'office-deggendorf' : (p.office === 'Hamburg' ? 'office-pfarrkirchen' : 'office-cham');
+            return `<div class="project-card"><div class="card-header"><div class="project-title">${escapeHtml(p.title)}</div><div class="office-tag ${officeClass}">📍 ${escapeHtml(p.office)}</div></div><div class="looking-for">🔍 Looking for: ${escapeHtml(p.looking_for || 'Collaborators')}</div><div class="card-footer"><button class="connect-btn" onclick="startConversation('${escapeHtml(p.author_email)}')">Message →</button></div></div>`;
+        }
+
+        async function postProject() {
+            const title = document.getElementById('projectTitle').value;
+            if (!title) { alert("Enter a title"); return; }
+            await fetch(`${API_URL}/opportunities`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, description: document.getElementById('projectDesc').value, looking_for: document.getElementById('projectLookingFor').value, office: currentUser.campus, author_email: currentUser.email }) });
+            document.getElementById('projectTitle').value = ''; document.getElementById('projectDesc').value = ''; document.getElementById('projectLookingFor').value = '';
+            await loadOpportunities(); alert("✅ Project posted!");
+        }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        function logout() { localStorage.removeItem('bridgr_user'); window.location.href = '../index.html'; }
+
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel'));
+                document.getElementById(`${tab.dataset.panel}Panel`).classList.add('active-panel');
+            });
+        });
+
+        loadData();
+    </script>
+</body>
+</html>
