@@ -5,69 +5,589 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bridgr | Internal Talent Marketplace</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1a2b4c; }
-        .navbar { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 0; position: sticky; top: 0; z-index: 100; }
-        .nav-container { max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .logo span { background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .user-menu { display: flex; align-items: center; gap: 20px; }
-        .user-avatar { width: 42px; height: 42px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
-        .logout-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 20px; border-radius: 40px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
-        .logout-btn:hover { background: #f1f5f9; }
-        .main-container { max-width: 1400px; margin: 0 auto; padding: 32px; }
-        .freeze-banner { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 16px 24px; border-radius: 16px; margin-bottom: 32px; display: flex; align-items: center; gap: 12px; }
-        .freeze-icon { font-size: 28px; }
-        .freeze-text strong { color: #92400e; font-size: 15px; }
-        .freeze-text p { color: #b45309; font-size: 13px; margin-top: 4px; }
-        .welcome-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 24px; padding: 32px; margin-bottom: 32px; color: white; position: relative; overflow: hidden; }
-        .welcome-banner::after { content: "⚡"; position: absolute; bottom: -20px; right: 20px; font-size: 120px; opacity: 0.1; }
-        .welcome-banner h1 { font-size: 28px; margin-bottom: 8px; }
-        .company-badge { display: inline-block; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 40px; font-size: 13px; margin-top: 12px; }
-        .two-columns { display: grid; grid-template-columns: 1fr 1.5fr; gap: 32px; }
-        .profile-card, .post-card { background: white; border-radius: 24px; padding: 28px; margin-bottom: 28px; border: 1px solid #e2e8f0; transition: all 0.3s; }
-        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f1f5f9; }
-        .profile-name { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .edit-profile-btn { background: none; border: 1px solid #e2e8f0; padding: 6px 16px; border-radius: 40px; cursor: pointer; font-size: 12px; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .info-card { background: #f8fafc; padding: 12px; border-radius: 16px; }
-        .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 4px; }
-        .info-value { font-size: 15px; font-weight: 600; color: #1e293b; }
-        .skills-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-        .skill-tag { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); color: #1e3c72; padding: 6px 14px; border-radius: 40px; font-size: 12px; font-weight: 600; }
-        .bio-text { color: #475569; font-size: 14px; line-height: 1.6; padding: 16px; background: #f8fafc; border-radius: 16px; margin-top: 16px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 16px; font-size: 14px; font-family: inherit; }
-        .submit-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
-        .section-header h2 { font-size: 22px; font-weight: 700; color: #1e293b; }
-        .filter-group { display: flex; gap: 12px; align-items: center; }
-        .filter-select { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 40px; font-size: 13px; background: white; cursor: pointer; }
-        .projects-list { display: flex; flex-direction: column; gap: 20px; }
-        .project-card { background: white; border-radius: 20px; padding: 24px; border: 1px solid #e2e8f0; transition: all 0.3s; }
-        .project-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
-        .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .project-title { font-size: 18px; font-weight: 700; color: #1e293b; }
-        .office-badge { font-size: 11px; padding: 4px 12px; border-radius: 40px; font-weight: 600; background: #e2e8f0; color: #475569; }
-        .project-description { color: #475569; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
-        .skill-required { background: #f8fafc; padding: 12px 16px; border-radius: 16px; margin: 16px 0; font-size: 13px; }
-        .skill-required span { font-weight: 700; color: #764ba2; }
-        .project-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
-        .project-date { font-size: 12px; color: #94a3b8; }
-        .complete-btn { background: #10b981; color: white; border: none; padding: 8px 24px; border-radius: 40px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .complete-btn:hover { background: #059669; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; background: white; border-radius: 20px; border: 1px solid #e2e8f0; }
-        @media (max-width: 900px) { .two-columns { grid-template-columns: 1fr; } .main-container { padding: 20px; } .info-grid { grid-template-columns: 1fr; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f8fafc;
+            color: #1a2b4c;
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        .freeze-banner {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .freeze-icon {
+            font-size: 28px;
+        }
+
+        .freeze-text strong {
+            color: #92400e;
+            font-size: 15px;
+        }
+
+        .freeze-text p {
+            color: #b45309;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: "⚡";
+            position: absolute;
+            bottom: -20px;
+            right: 20px;
+            font-size: 120px;
+            opacity: 0.1;
+        }
+
+        .welcome-banner h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .company-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.2s;
+            color: #64748b;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 32px;
+        }
+
+        .profile-card, .post-card, .admin-card {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .edit-profile-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 16px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            color: #1e3c72;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .bio-text {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 40px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .badge-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .office-badge {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 600;
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .priority-urgent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .priority-high {
+            background: #ffedd5;
+            color: #f59e0b;
+        }
+
+        .priority-normal {
+            background: #e0e7ff;
+            color: #3b82f6;
+        }
+
+        .project-description {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .skill-required {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .skill-required span {
+            font-weight: 700;
+            color: #764ba2;
+        }
+
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .project-date {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .complete-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .complete-btn:hover {
+            background: #059669;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e3c72;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .top-helper-list {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .helper-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .helper-item:last-child {
+            border-bottom: none;
+        }
+
+        .helper-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .helper-count {
+            background: #e0e7ff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            .main-container {
+                padding: 20px;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-container {
+                padding: 0 20px;
+            }
+            .tabs {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <div class="nav-container">
             <div class="logo">Bridgr<span>⚡</span></div>
-            <div class="user-menu">
-                <div class="user-avatar" id="avatarInitials">U</div>
-                <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="nav-links">
+                <button class="lang-btn" id="langToggle">🇩🇪 DE / 🇬🇧 EN</button>
+                <div class="user-menu">
+                    <div class="user-avatar" id="avatarInitials">U</div>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
             </div>
         </div>
     </div>
@@ -76,59 +596,141 @@
         <div class="freeze-banner">
             <div class="freeze-icon">🔴</div>
             <div class="freeze-text">
-                <strong>Hiring Freeze Mode Active</strong>
-                <p>External hiring is paused. Use internal talent first.</p>
+                <strong id="freezeTitle">Hiring Freeze Mode Active</strong>
+                <p id="freezeText">External hiring is paused. Use internal talent first.</p>
             </div>
         </div>
 
         <div class="welcome-banner">
             <h1 id="welcomeName">Welcome to Bridgr</h1>
-            <p>Connect with internal talent across your company offices</p>
+            <p id="welcomeText">Connect with internal talent across your company offices</p>
             <div class="company-badge" id="companyBadge">📍 Company Office</div>
         </div>
 
-        <div class="two-columns">
-            <div>
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="profile-name" id="profileName">Employee Name</div>
-                        <button class="edit-profile-btn" onclick="editProfile()">Edit Profile</button>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="requests">📋 Requests</button>
+            <button class="tab-btn" data-tab="admin">📊 Admin Dashboard</button>
+        </div>
+
+        <div id="requestsTab" class="tab-content active">
+            <div class="two-columns">
+                <div>
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-name" id="profileName">Employee Name</div>
+                            <button class="edit-profile-btn" onclick="editProfile()" id="editProfileBtn">Edit Profile</button>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="info-label" id="officeLabel">📍 Office</div>
+                                <div class="info-value" id="profileOffice">-</div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-label" id="deptLabel">📂 Department</div>
+                                <div class="info-value" id="profileDepartment">-</div>
+                            </div>
+                        </div>
+                        <div class="info-label" id="skillsLabel">🔧 Skills</div>
+                        <div class="skills-list" id="skillsList"></div>
+                        <div class="bio-text" id="userBio"></div>
                     </div>
-                    <div class="info-grid">
-                        <div class="info-card"><div class="info-label">📍 Office</div><div class="info-value" id="profileOffice">-</div></div>
-                        <div class="info-card"><div class="info-label">📂 Department</div><div class="info-value" id="profileDepartment">-</div></div>
+
+                    <div class="post-card">
+                        <h3 id="postTitle" style="margin-bottom: 20px;">➕ Need help with something?</h3>
+                        <div class="form-group">
+                            <label id="titleLabel">What do you need help with?</label>
+                            <input type="text" id="projectTitle" placeholder="e.g., Data analysis for Q3 report">
+                        </div>
+                        <div class="form-group">
+                            <label id="descLabel">Describe the task</label>
+                            <textarea id="projectDesc" rows="3" placeholder="Describe what you need help with..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label id="skillsRequiredLabel">Skills required</label>
+                            <input type="text" id="projectSkills" placeholder="e.g., Excel, Python">
+                        </div>
+                        <div class="form-group">
+                            <label id="officeSelectLabel">Office location</label>
+                            <select id="projectOffice">
+                                <option value="Munich">Munich</option>
+                                <option value="Hamburg">Hamburg</option>
+                                <option value="Berlin">Berlin</option>
+                                <option value="Cologne">Cologne</option>
+                                <option value="Frankfurt">Frankfurt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="priorityLabel">Priority</label>
+                            <select id="projectPriority">
+                                <option value="Normal">🟢 Normal</option>
+                                <option value="High">🟠 High</option>
+                                <option value="Urgent">🔴 Urgent</option>
+                            </select>
+                        </div>
+                        <button class="submit-btn" onclick="postProject()" id="postBtn">Post Request →</button>
                     </div>
-                    <div class="info-label" style="margin-bottom: 8px;">🔧 Skills</div>
-                    <div class="skills-list" id="skillsList"></div>
-                    <div class="bio-text" id="userBio"></div>
                 </div>
 
-                <div class="post-card">
-                    <h3 style="margin-bottom: 20px;">➕ Need help with something?</h3>
-                    <div class="form-group"><label>What do you need help with?</label><input type="text" id="projectTitle" placeholder="e.g., Data analysis for Q3 report"></div>
-                    <div class="form-group"><label>Describe the task</label><textarea id="projectDesc" rows="3" placeholder="Describe what you need help with..."></textarea></div>
-                    <div class="form-group"><label>Skills required</label><input type="text" id="projectSkills" placeholder="e.g., Excel, Python"></div>
-                    <div class="form-group"><label>Office location</label><select id="projectOffice"><option value="Munich">Munich</option><option value="Hamburg">Hamburg</option><option value="Berlin">Berlin</option><option value="Cologne">Cologne</option><option value="Frankfurt">Frankfurt</option></select></div>
-                    <button class="submit-btn" onclick="postProject()">Post Request →</button>
+                <div>
+                    <div class="section-header">
+                        <h2 id="openRequestsTitle">📋 Open Requests</h2>
+                        <div class="filter-group">
+                            <label id="filterLabel" style="font-size: 13px;">Filter by office:</label>
+                            <select id="officeFilter" class="filter-select">
+                                <option value="all">All Offices</option>
+                                <option value="Munich">🇩🇪 Munich</option>
+                                <option value="Hamburg">🇩🇪 Hamburg</option>
+                                <option value="Berlin">🇩🇪 Berlin</option>
+                                <option value="Cologne">🇩🇪 Cologne</option>
+                                <option value="Frankfurt">🇩🇪 Frankfurt</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="projectsList" class="projects-list">
+                        <div class="empty-state">Loading requests...</div>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <div class="section-header">
+                            <h2 id="completedTitle">✅ Completed Requests</h2>
+                        </div>
+                        <div id="completedList" class="projects-list">
+                            <div class="empty-state" id="completedEmpty">No completed requests yet. Complete a request to see it here.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminTab" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRequests">0</div>
+                    <div class="stat-label" id="totalRequestsLabel">Total Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label" id="completedLabel">Completed Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="openCount">0</div>
+                    <div class="stat-label" id="openLabel">Open Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeEmployees">0</div>
+                    <div class="stat-label" id="activeLabel">Active Employees</div>
                 </div>
             </div>
 
-            <div>
-                <div class="section-header">
-                    <h2>📋 Open Requests</h2>
-                    <div class="filter-group">
-                        <label style="font-size: 13px;">Filter by office:</label>
-                        <select id="officeFilter" class="filter-select">
-                            <option value="all">All Offices</option>
-                            <option value="Munich">🇩🇪 Munich</option>
-                            <option value="Hamburg">🇩🇪 Hamburg</option>
-                            <option value="Berlin">🇩🇪 Berlin</option>
-                            <option value="Cologne">🇩🇪 Cologne</option>
-                            <option value="Frankfurt">🇩🇪 Frankfurt</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="projectsList" class="projects-list"><div class="empty-state">Loading requests...</div></div>
+            <div class="top-helper-list">
+                <h3 id="topHelpersTitle" style="margin-bottom: 16px;">🏆 Top Helpers</h3>
+                <div id="topHelpersList"></div>
+            </div>
+
+            <div class="post-card" style="margin-top: 24px;">
+                <h3 id="exportTitle">📎 Export Data</h3>
+                <p id="exportText" style="margin-bottom: 16px; color: #64748b;">Download reports for your records</p>
+                <button class="submit-btn" onclick="exportToCSV()" id="exportBtn">Export to CSV →</button>
             </div>
         </div>
     </div>
@@ -137,16 +739,117 @@
         const API_URL = '/api';
         let currentUser = null;
         let allProjects = [];
+        let completedRequests = JSON.parse(localStorage.getItem('bridgr_completed') || '[]');
+        let currentLang = localStorage.getItem('bridgr_lang') || 'en';
         
         let employeeSkills = ['Data Analysis', 'Project Management', 'Python'];
         let employeeBio = 'Experienced data analyst looking to help colleagues across offices.';
         let employeeOffice = 'Berlin';
         let employeeDepartment = 'Analytics';
 
+        const translations = {
+            en: {
+                freezeTitle: "Hiring Freeze Mode Active",
+                freezeText: "External hiring is paused. Use internal talent first.",
+                welcomeText: "Connect with internal talent across your company offices",
+                editProfileBtn: "Edit Profile",
+                officeLabel: "📍 Office",
+                deptLabel: "📂 Department",
+                skillsLabel: "🔧 Skills",
+                postTitle: "➕ Need help with something?",
+                titleLabel: "What do you need help with?",
+                descLabel: "Describe the task",
+                skillsRequiredLabel: "Skills required",
+                officeSelectLabel: "Office location",
+                priorityLabel: "Priority",
+                postBtn: "Post Request →",
+                openRequestsTitle: "📋 Open Requests",
+                filterLabel: "Filter by office:",
+                completedTitle: "✅ Completed Requests",
+                completedEmpty: "No completed requests yet. Complete a request to see it here.",
+                totalRequestsLabel: "Total Requests",
+                completedLabel: "Completed Requests",
+                openLabel: "Open Requests",
+                activeLabel: "Active Employees",
+                topHelpersTitle: "🏆 Top Helpers",
+                exportTitle: "📎 Export Data",
+                exportText: "Download reports for your records",
+                exportBtn: "Export to CSV →"
+            },
+            de: {
+                freezeTitle: "Einstellungsstopp Modus Aktiv",
+                freezeText: "Externe Einstellungen sind pausiert. Nutzen Sie zuerst interne Talente.",
+                welcomeText: "Verbinden Sie sich mit internen Talenten in allen Büros",
+                editProfileBtn: "Profil Bearbeiten",
+                officeLabel: "📍 Büro",
+                deptLabel: "📂 Abteilung",
+                skillsLabel: "🔧 Fähigkeiten",
+                postTitle: "➕ Brauchen Sie Hilfe?",
+                titleLabel: "Wobei brauchen Sie Hilfe?",
+                descLabel: "Beschreiben Sie die Aufgabe",
+                skillsRequiredLabel: "Benötigte Fähigkeiten",
+                officeSelectLabel: "Bürostandort",
+                priorityLabel: "Priorität",
+                postBtn: "Anfrage Stellen →",
+                openRequestsTitle: "📋 Offene Anfragen",
+                filterLabel: "Filtern nach Büro:",
+                completedTitle: "✅ Erledigte Anfragen",
+                completedEmpty: "Noch keine erledigten Anfragen. Erledigen Sie eine Anfrage, um sie hier zu sehen.",
+                totalRequestsLabel: "Gesamt Anfragen",
+                completedLabel: "Erledigte Anfragen",
+                openLabel: "Offene Anfragen",
+                activeLabel: "Aktive Mitarbeiter",
+                topHelpersTitle: "🏆 Top Helfer",
+                exportTitle: "📎 Daten Exportieren",
+                exportText: "Laden Sie Berichte für Ihre Aufzeichnungen herunter",
+                exportBtn: "Als CSV Exportieren →"
+            }
+        };
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.getElementById('freezeTitle').innerText = t.freezeTitle;
+            document.getElementById('freezeText').innerText = t.freezeText;
+            document.getElementById('welcomeText').innerText = t.welcomeText;
+            document.getElementById('editProfileBtn').innerText = t.editProfileBtn;
+            document.getElementById('officeLabel').innerText = t.officeLabel;
+            document.getElementById('deptLabel').innerText = t.deptLabel;
+            document.getElementById('skillsLabel').innerText = t.skillsLabel;
+            document.getElementById('postTitle').innerText = t.postTitle;
+            document.getElementById('titleLabel').innerText = t.titleLabel;
+            document.getElementById('descLabel').innerText = t.descLabel;
+            document.getElementById('skillsRequiredLabel').innerText = t.skillsRequiredLabel;
+            document.getElementById('officeSelectLabel').innerText = t.officeSelectLabel;
+            document.getElementById('priorityLabel').innerText = t.priorityLabel;
+            document.getElementById('postBtn').innerText = t.postBtn;
+            document.getElementById('openRequestsTitle').innerText = t.openRequestsTitle;
+            document.getElementById('filterLabel').innerText = t.filterLabel;
+            document.getElementById('completedTitle').innerText = t.completedTitle;
+            document.getElementById('completedEmpty').innerText = t.completedEmpty;
+            document.getElementById('totalRequestsLabel').innerText = t.totalRequestsLabel;
+            document.getElementById('completedLabel').innerText = t.completedLabel;
+            document.getElementById('openLabel').innerText = t.openLabel;
+            document.getElementById('activeLabel').innerText = t.activeLabel;
+            document.getElementById('topHelpersTitle').innerText = t.topHelpersTitle;
+            document.getElementById('exportTitle').innerText = t.exportTitle;
+            document.getElementById('exportText').innerText = t.exportText;
+            document.getElementById('exportBtn').innerText = t.exportBtn;
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'de' : 'en';
+            localStorage.setItem('bridgr_lang', currentLang);
+            applyLanguage();
+        }
+
         async function loadData() {
             const user = localStorage.getItem('bridgr_user');
-            if (!user) { window.location.href = 'signup.html'; return; }
+            if (!user) { 
+                window.location.href = 'signup.html'; 
+                return; 
+            }
             currentUser = JSON.parse(user);
+            
             document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
             document.getElementById('companyBadge').innerHTML = `📍 ${currentUser.campus || 'Berlin'} Office`;
             document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
@@ -161,8 +864,13 @@
             
             displaySkills();
             document.getElementById('userBio').innerHTML = employeeBio;
+            
             await loadProjects();
+            displayCompletedRequests();
+            updateAdminDashboard();
+            
             document.getElementById('officeFilter').addEventListener('change', () => displayProjects());
+            applyLanguage();
         }
 
         function displaySkills() {
@@ -191,6 +899,7 @@
                 const response = await fetch(`${API_URL}/projects`);
                 allProjects = await response.json();
                 displayProjects();
+                updateAdminDashboard();
             } catch (error) {
                 document.getElementById('projectsList').innerHTML = '<div class="empty-state">⚠️ Could not load requests.</div>';
             }
@@ -199,55 +908,166 @@
         function displayProjects() {
             const filter = document.getElementById('officeFilter').value;
             let filtered = filter === 'all' ? allProjects : allProjects.filter(p => p.campus === filter);
+            
             if (filtered.length === 0) {
                 document.getElementById('projectsList').innerHTML = '<div class="empty-state">✨ No open requests. Be the first to post!</div>';
                 return;
             }
+            
             document.getElementById('projectsList').innerHTML = filtered.map(p => {
                 const date = new Date(p.created_at);
                 const timeAgo = getTimeAgo(date);
+                const priority = p.priority || 'Normal';
+                const priorityClass = priority === 'Urgent' ? 'priority-urgent' : (priority === 'High' ? 'priority-high' : 'priority-normal');
                 return `
                     <div class="project-card">
                         <div class="project-header">
                             <div class="project-title">${escapeHtml(p.title)}</div>
-                            <div class="office-badge">📍 ${escapeHtml(p.campus)}</div>
+                            <div class="badge-group">
+                                <div class="office-badge">📍 ${escapeHtml(p.campus)}</div>
+                                <div class="priority-badge ${priorityClass}">${priority}</div>
+                            </div>
                         </div>
                         <div class="project-description">${escapeHtml(p.description || 'No description provided.')}</div>
-                        <div class="skill-required"><span>🎯 Skills needed:</span> ${escapeHtml(p.looking_for || 'General help')}</div>
+                        <div class="skill-required">
+                            <span>🎯 Skills needed:</span> ${escapeHtml(p.looking_for || 'General help')}
+                        </div>
                         <div class="project-footer">
                             <span class="project-date">📅 ${timeAgo}</span>
-                            <button class="complete-btn" onclick="completeRequest(this, '${escapeHtml(p.title)}')">✓ Mark Complete</button>
+                            <button class="complete-btn" onclick="completeRequest(this, '${escapeHtml(p.title)}', '${escapeHtml(p.campus)}', '${escapeHtml(p.author_email)}')">✓ Mark Complete</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function completeRequest(button, title) {
+        function completeRequest(button, title, office, requesterEmail) {
             button.innerHTML = '✓ Completed';
             button.disabled = true;
             button.style.opacity = '0.6';
-            alert(`✅ "${title}" marked as complete! Thank you for helping a colleague.`);
+            
+            completedRequests.unshift({
+                title: title,
+                office: office,
+                requesterEmail: requesterEmail,
+                completedBy: currentUser.email,
+                completedAt: new Date().toISOString()
+            });
+            localStorage.setItem('bridgr_completed', JSON.stringify(completedRequests));
+            displayCompletedRequests();
+            updateAdminDashboard();
+            
+            alert(`✅ "${title}" marked as complete!\n\nThank you for helping a colleague.`);
+            
+            const projectCard = button.closest('.project-card');
+            if (projectCard) {
+                projectCard.style.display = 'none';
+            }
+        }
+
+        function displayCompletedRequests() {
+            if (completedRequests.length === 0) {
+                document.getElementById('completedList').innerHTML = '<div class="empty-state">✅ No completed requests yet. Complete a request to see it here.</div>';
+                return;
+            }
+            
+            document.getElementById('completedList').innerHTML = completedRequests.map(req => {
+                const date = new Date(req.completedAt);
+                return `
+                    <div class="project-card" style="background: #f0fdf4; border-color: #bbf7d0;">
+                        <div class="project-header">
+                            <div class="project-title">✅ ${escapeHtml(req.title)}</div>
+                            <div class="office-badge">📍 ${escapeHtml(req.office)}</div>
+                        </div>
+                        <div class="skill-required">
+                            <span>🙏 Completed by ${escapeHtml(req.completedBy)}</span>
+                        </div>
+                        <div class="project-footer">
+                            <span class="project-date">📅 Completed: ${date.toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateAdminDashboard() {
+            const totalRequests = allProjects.length;
+            const openCount = allProjects.length;
+            const completedCount = completedRequests.length;
+            
+            document.getElementById('totalRequests').innerText = totalRequests;
+            document.getElementById('completedCount').innerText = completedCount;
+            document.getElementById('openCount').innerText = openCount;
+            document.getElementById('activeEmployees').innerText = '3';
+            
+            const helperCounts = {};
+            completedRequests.forEach(req => {
+                const helper = req.completedBy;
+                helperCounts[helper] = (helperCounts[helper] || 0) + 1;
+            });
+            
+            const sortedHelpers = Object.entries(helperCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
+            const topHelpersHtml = sortedHelpers.map(([name, count]) => `
+                <div class="helper-item">
+                    <span class="helper-name">${escapeHtml(name)}</span>
+                    <span class="helper-count">${count} completed</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('topHelpersList').innerHTML = topHelpersHtml || '<div class="empty-state">No helpers yet</div>';
+        }
+
+        function exportToCSV() {
+            let csv = "Title,Office,Completed By,Completed At\n";
+            completedRequests.forEach(req => {
+                csv += `"${req.title}","${req.office}","${req.completedBy}","${new Date(req.completedAt).toLocaleString()}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bridgr_completed_requests.csv';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         async function postProject() {
             const title = document.getElementById('projectTitle').value;
-            if (!title) { alert('Please enter a title'); return; }
-            await fetch(`${API_URL}/projects`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: title,
-                    description: document.getElementById('projectDesc').value,
-                    looking_for: document.getElementById('projectSkills').value || 'Help needed',
-                    campus: document.getElementById('projectOffice').value,
-                    author_email: currentUser.email
-                })
-            });
-            document.getElementById('projectTitle').value = '';
-            document.getElementById('projectDesc').value = '';
-            document.getElementById('projectSkills').value = '';
-            await loadProjects();
-            alert('✅ Request posted!');
+            const description = document.getElementById('projectDesc').value;
+            const looking_for = document.getElementById('projectSkills').value;
+            const campus = document.getElementById('projectOffice').value;
+            const priority = document.getElementById('projectPriority').value;
+            
+            if (!title) {
+                alert('Please enter a title');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        looking_for: looking_for || 'Help needed',
+                        campus: campus,
+                        priority: priority,
+                        author_email: currentUser.email
+                    })
+                });
+                if (response.ok) {
+                    document.getElementById('projectTitle').value = '';
+                    document.getElementById('projectDesc').value = '';
+                    document.getElementById('projectSkills').value = '';
+                    await loadProjects();
+                    alert('✅ Request posted!');
+                } else {
+                    alert('Error posting request');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
         }
 
         function getTimeAgo(date) {
@@ -256,14 +1076,41 @@
             const diffMins = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMins / 60);
             const diffDays = Math.floor(diffHours / 24);
+            
             if (diffMins < 1) return 'just now';
             if (diffMins < 60) return `${diffMins} min ago`;
             if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
             return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
         }
 
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
-        function logout() { localStorage.removeItem('bridgr_user'); window.location.href = '../index.html'; }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('bridgr_user');
+            window.location.href = '../index.html';
+        }
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
+                if (btn.dataset.tab === 'admin') {
+                    updateAdminDashboard();
+                }
+            });
+        });
+
+        document.getElementById('langToggle').addEventListener('click', toggleLanguage);
 
         loadData();
     </script>
