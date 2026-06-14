@@ -179,6 +179,7 @@
             margin-bottom: 32px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -559,6 +560,69 @@
             color: #1e3c72;
         }
 
+        .profile-detail-section {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .profile-detail-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: start;
+        }
+
+        .detail-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        .linkedin-link {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .linkedin-link:hover {
+            text-decoration: underline;
+        }
+
+        .cv-upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .cv-upload-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+        }
+
         @media (max-width: 900px) {
             .two-columns {
                 grid-template-columns: 1fr;
@@ -574,6 +638,10 @@
             }
             .tabs {
                 justify-content: center;
+            }
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: 4px;
             }
         }
     </style>
@@ -608,10 +676,91 @@
         </div>
 
         <div class="tabs">
+            <button class="tab-btn" data-tab="profile">👤 Profile</button>
             <button class="tab-btn active" data-tab="requests">📋 Requests</button>
-            <button class="tab-btn" data-tab="admin">📊 Admin Dashboard</button>
+            <button class="tab-btn" data-tab="admin">📊 Admin</button>
         </div>
 
+        <!-- Profile Tab -->
+        <div id="profileTab" class="tab-content">
+            <div class="profile-detail-section">
+                <div class="profile-header" style="margin-bottom: 24px;">
+                    <div class="profile-name" id="detailProfileName">Employee Name</div>
+                    <button class="edit-profile-btn" onclick="editDetailedProfile()">Edit Profile</button>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">📍 Office</div>
+                    <div class="detail-value" id="detailOffice">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">📂 Department</div>
+                    <div class="detail-value" id="detailDepartment">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">🎯 Job Title / Role</div>
+                    <div class="detail-value" id="detailJobTitle">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">📧 Email</div>
+                    <div class="detail-value" id="detailEmail">-</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">📅 Joined</div>
+                    <div class="detail-value" id="detailJoined">-</div>
+                </div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>📝 About Me</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Bio</div>
+                    <div class="detail-value" id="detailBio">-</div>
+                </div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>🔧 Skills & Expertise</h3>
+                <div class="skills-list" id="detailSkillsList"></div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>💼 Work History</h3>
+                <div class="detail-value" id="detailWorkHistory">No work history added yet.</div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>🎓 Education</h3>
+                <div class="detail-value" id="detailEducation">No education added yet.</div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>🗣️ Languages</h3>
+                <div class="detail-value" id="detailLanguages">No languages added yet.</div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>📜 Certifications</h3>
+                <div class="detail-value" id="detailCertifications">No certifications added yet.</div>
+            </div>
+
+            <div class="profile-detail-section">
+                <h3>🔗 Professional Links</h3>
+                <div class="detail-row">
+                    <div class="detail-label">LinkedIn</div>
+                    <div class="detail-value" id="detailLinkedin">-</div>
+                </div>
+                <div style="margin-top: 16px;">
+                    <label class="detail-label" style="display: block; margin-bottom: 8px;">📄 CV / Resume</label>
+                    <input type="file" id="cvFile" accept=".pdf,.doc,.docx" style="margin-bottom: 12px;">
+                    <button class="cv-upload-btn" onclick="uploadCV()">Upload CV →</button>
+                    <span id="cvFilename" style="margin-left: 12px; font-size: 12px; color: #64748b;"></span>
+                    <div id="cvDownload" style="margin-top: 8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Tab -->
         <div id="requestsTab" class="tab-content active">
             <div class="two-columns">
                 <div>
@@ -702,6 +851,7 @@
             </div>
         </div>
 
+        <!-- Admin Tab -->
         <div id="adminTab" class="tab-content">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -741,6 +891,18 @@
         let allProjects = [];
         let completedRequests = JSON.parse(localStorage.getItem('bridgr_completed') || '[]');
         let currentLang = localStorage.getItem('bridgr_lang') || 'en';
+        let currentUserId = null;
+        
+        let profileData = JSON.parse(localStorage.getItem('bridgr_profile_data')) || {
+            jobTitle: '',
+            joined: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+            workHistory: '',
+            education: '',
+            languages: '',
+            certifications: '',
+            linkedin: '',
+            cvFilename: ''
+        };
         
         let employeeSkills = ['Data Analysis', 'Project Management', 'Python'];
         let employeeBio = 'Experienced data analyst looking to help colleagues across offices.';
@@ -842,6 +1004,97 @@
             applyLanguage();
         }
 
+        async function uploadCV() {
+            const fileInput = document.getElementById('cvFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file first');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('cv', file);
+            
+            try {
+                const response = await fetch(`${API_URL}/users/${currentUserId}/upload-cv`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    document.getElementById('cvFilename').innerHTML = `📄 ${result.filename}`;
+                    document.getElementById('cvDownload').innerHTML = `<a href="${API_URL}/uploads/${result.filename}" target="_blank" class="linkedin-link">📥 Download CV</a>`;
+                    alert('CV uploaded successfully!');
+                } else {
+                    alert('Upload failed');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function loadCV() {
+            if (!currentUserId) return;
+            try {
+                const response = await fetch(`${API_URL}/users/${currentUserId}/cv`);
+                const data = await response.json();
+                if (data.cvUrl) {
+                    document.getElementById('cvDownload').innerHTML = `<a href="${API_URL}${data.cvUrl}" target="_blank" class="linkedin-link">📥 Download CV</a>`;
+                    const filename = data.cvUrl.split('/').pop();
+                    document.getElementById('cvFilename').innerHTML = `📄 ${filename}`;
+                }
+            } catch (error) {
+                console.error('Error loading CV:', error);
+            }
+        }
+
+        function displayDetailedProfile() {
+            document.getElementById('detailProfileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
+            document.getElementById('detailOffice').innerHTML = currentUser.campus || 'Berlin';
+            document.getElementById('detailDepartment').innerHTML = currentUser.department || 'Not specified';
+            document.getElementById('detailJobTitle').innerHTML = profileData.jobTitle || 'Not specified';
+            document.getElementById('detailEmail').innerHTML = currentUser.email;
+            document.getElementById('detailJoined').innerHTML = profileData.joined || new Date().toLocaleDateString();
+            document.getElementById('detailBio').innerHTML = employeeBio;
+            document.getElementById('detailWorkHistory').innerHTML = profileData.workHistory || 'No work history added yet.';
+            document.getElementById('detailEducation').innerHTML = profileData.education || 'No education added yet.';
+            document.getElementById('detailLanguages').innerHTML = profileData.languages || 'No languages added yet.';
+            document.getElementById('detailCertifications').innerHTML = profileData.certifications || 'No certifications added yet.';
+            
+            if (profileData.linkedin) {
+                document.getElementById('detailLinkedin').innerHTML = `<a href="${profileData.linkedin}" target="_blank" class="linkedin-link">${profileData.linkedin}</a>`;
+            } else {
+                document.getElementById('detailLinkedin').innerHTML = 'Not provided';
+            }
+            
+            const skillsHtml = employeeSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
+            document.getElementById('detailSkillsList').innerHTML = skillsHtml || '<span class="skill-tag">No skills added</span>';
+        }
+
+        function editDetailedProfile() {
+            const newJobTitle = prompt("Enter your job title / role:", profileData.jobTitle);
+            if (newJobTitle !== null) profileData.jobTitle = newJobTitle;
+            
+            const newWorkHistory = prompt("Enter your work history (previous roles at this company):", profileData.workHistory);
+            if (newWorkHistory !== null) profileData.workHistory = newWorkHistory;
+            
+            const newEducation = prompt("Enter your education:", profileData.education);
+            if (newEducation !== null) profileData.education = newEducation;
+            
+            const newLanguages = prompt("Enter languages you speak (comma separated):", profileData.languages);
+            if (newLanguages !== null) profileData.languages = newLanguages;
+            
+            const newCertifications = prompt("Enter your certifications:", profileData.certifications);
+            if (newCertifications !== null) profileData.certifications = newCertifications;
+            
+            const newLinkedin = prompt("Enter your LinkedIn profile URL:", profileData.linkedin);
+            if (newLinkedin !== null) profileData.linkedin = newLinkedin;
+            
+            localStorage.setItem('bridgr_profile_data', JSON.stringify(profileData));
+            displayDetailedProfile();
+            alert('Profile updated!');
+        }
+
         async function loadData() {
             const user = localStorage.getItem('bridgr_user');
             if (!user) { 
@@ -849,6 +1102,18 @@
                 return; 
             }
             currentUser = JSON.parse(user);
+            
+            // Get user ID from database
+            try {
+                const response = await fetch(`${API_URL}/users`);
+                const users = await response.json();
+                const foundUser = users.find(u => u.email === currentUser.email);
+                if (foundUser) {
+                    currentUserId = foundUser.id;
+                }
+            } catch(e) {
+                console.error('Could not fetch user ID');
+            }
             
             document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
             document.getElementById('companyBadge').innerHTML = `📍 ${currentUser.campus || 'Berlin'} Office`;
@@ -864,6 +1129,9 @@
             
             displaySkills();
             document.getElementById('userBio').innerHTML = employeeBio;
+            
+            displayDetailedProfile();
+            await loadCV();
             
             await loadProjects();
             displayCompletedRequests();
@@ -884,12 +1152,14 @@
                 employeeSkills = newSkills.split(',').map(s => s.trim());
                 localStorage.setItem('bridgr_skills', JSON.stringify(employeeSkills));
                 displaySkills();
+                displayDetailedProfile();
             }
             const newBio = prompt("Enter your bio:", employeeBio);
             if (newBio) {
                 employeeBio = newBio;
                 localStorage.setItem('bridgr_bio', employeeBio);
                 document.getElementById('userBio').innerHTML = employeeBio;
+                displayDetailedProfile();
             }
             alert('Profile updated!');
         }
@@ -1106,6 +1376,10 @@
                 document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
                 if (btn.dataset.tab === 'admin') {
                     updateAdminDashboard();
+                }
+                if (btn.dataset.tab === 'profile') {
+                    displayDetailedProfile();
+                    loadCV();
                 }
             });
         });

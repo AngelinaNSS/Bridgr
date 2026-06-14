@@ -5,3 +5,6 @@ RUN npm install
 COPY . .
 EXPOSE 5000
 CMD ["npm", "start"]
+# Create uploads directory
+RUN mkdir -p /app/uploads
+VOLUME /app/uploads
