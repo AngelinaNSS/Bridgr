@@ -4,35 +4,16 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const logger = require('./logger');
 
 const app = express();
 const port = 5000;
 
-// ==================== RATE LIMITING ====================
-// Simple in-memory rate limiter
-const requestCounts = {};
-const RATE_LIMIT_WINDOW = 60000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 100;
-
+// Log all requests
 app.use((req, res, next) => {
-    const key = req.ip || req.connection.remoteAddress;
-    const now = Date.now();
-    
-    if (!requestCounts[key]) {
-        requestCounts[key] = [];
-    }
-    
-    // Clean up old requests
-    requestCounts[key] = requestCounts[key].filter(time => now - time < RATE_LIMIT_WINDOW);
-    
-    if (requestCounts[key].length >= MAX_REQUESTS_PER_WINDOW) {
-        return res.status(429).json({ error: 'Too many requests. Please try again later.' });
-    }
-    
-    requestCounts[key].push(now);
+    logger.info(`${req.method} ${req.url} - ${req.ip}`);
     next();
 });
-// ==================== END RATE LIMITING ====================
 
 // Create uploads folder if it doesn't exist
 const uploadDir = path.join(__dirname, 'uploads');
@@ -66,9 +47,9 @@ const pool = new Pool({
 
 pool.connect((err) => {
     if (err) {
-        console.error('Database connection error:', err);
+        logger.error('Database connection error:', err);
     } else {
-        console.log('✅ Connected to PostgreSQL');
+        logger.info('✅ Connected to PostgreSQL');
     }
 });
 
@@ -78,6 +59,7 @@ app.get('/api/users', async (req, res) => {
         const result = await pool.query('SELECT id, email, first_name, last_name, campus, skills, bio, cv_filename FROM users');
         res.json(result.rows);
     } catch (err) {
+        logger.error('Error fetching users:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -89,8 +71,10 @@ app.post('/api/users', async (req, res) => {
             'INSERT INTO users (email, first_name, last_name, campus, skills, bio) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [email, firstName, lastName, campus, skills, bio || '']
         );
+        logger.info(`User created: ${email}`);
         res.json(result.rows[0]);
     } catch (err) {
+        logger.error('Error creating user:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -103,8 +87,10 @@ app.post('/api/users/:userId/upload-cv', upload.single('cv'), async (req, res) =
     }
     try {
         await pool.query('UPDATE users SET cv_filename = $1 WHERE id = $2', [req.file.filename, userId]);
+        logger.info(`CV uploaded for user ${userId}: ${req.file.filename}`);
         res.json({ success: true, filename: req.file.filename });
     } catch (err) {
+        logger.error('Error uploading CV:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -120,6 +106,7 @@ app.get('/api/users/:userId/cv', async (req, res) => {
             res.json({ cvUrl: null });
         }
     } catch (err) {
+        logger.error('Error fetching CV:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -130,6 +117,7 @@ app.get('/api/projects', async (req, res) => {
         const result = await pool.query('SELECT * FROM projects ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (err) {
+        logger.error('Error fetching projects:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -141,8 +129,10 @@ app.post('/api/projects', async (req, res) => {
             'INSERT INTO projects (title, description, looking_for, campus, author_email, priority) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [title, description, looking_for, campus, author_email, priority || 'Normal']
         );
+        logger.info(`Project created: ${title} by ${author_email}`);
         res.json(result.rows[0]);
     } catch (err) {
+        logger.error('Error creating project:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -153,6 +143,7 @@ app.get('/api/events', async (req, res) => {
         const result = await pool.query('SELECT * FROM events ORDER BY event_date ASC');
         res.json(result.rows);
     } catch (err) {
+        logger.error('Error fetching events:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -164,8 +155,10 @@ app.post('/api/events', async (req, res) => {
             'INSERT INTO events (title, location, event_date) VALUES ($1, $2, $3) RETURNING *',
             [title, location, event_date]
         );
+        logger.info(`Event created: ${title}`);
         res.json(result.rows[0]);
     } catch (err) {
+        logger.error('Error creating event:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -176,6 +169,7 @@ app.get('/api/carpools', async (req, res) => {
         const result = await pool.query('SELECT * FROM carpools ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (err) {
+        logger.error('Error fetching carpools:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -187,12 +181,14 @@ app.post('/api/carpools', async (req, res) => {
             'INSERT INTO carpools (from_campus, to_campus, datetime, seats) VALUES ($1, $2, $3, $4) RETURNING *',
             [from_campus, to_campus, datetime, seats]
         );
+        logger.info(`Carpool created: ${from_campus} → ${to_campus}`);
         res.json(result.rows[0]);
     } catch (err) {
+        logger.error('Error creating carpool:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 Backend API running on port ${port}`);
+    logger.info(`🚀 Backend API running on port ${port}`);
 });
