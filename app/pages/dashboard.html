@@ -112,16 +112,21 @@
             padding: 32px;
         }
 
+        /* Hiring Freeze Banner */
         .freeze-banner {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border-left: 4px solid #f59e0b;
             padding: 16px 24px;
             border-radius: 16px;
             margin-bottom: 32px;
+        }
+
+        .freeze-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
             flex-wrap: wrap;
+            gap: 16px;
         }
 
         .freeze-icon {
@@ -137,6 +142,119 @@
             color: #b45309;
             font-size: 13px;
             margin-top: 4px;
+        }
+
+        .freeze-controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .freeze-toggle-btn {
+            background: #92400e;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .freeze-toggle-btn:hover {
+            background: #78350f;
+        }
+
+        .external-hire-btn {
+            background: #94a3b8;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .external-hire-btn.active {
+            background: #1e3c72;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        /* Savings Tracker */
+        .savings-tracker {
+            background: #dbeafe;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .savings-amount {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e3c72;
+        }
+
+        .savings-details {
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .savings-details span {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        /* Talent Recommendations */
+        .talent-recommendations {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .talent-recommendations h4 {
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .talent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .talent-item:last-child {
+            border-bottom: none;
+        }
+
+        .talent-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .talent-skills {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .talent-office {
+            font-size: 12px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 2px 10px;
+            border-radius: 40px;
         }
 
         .welcome-banner {
@@ -597,15 +715,6 @@
             line-height: 1.5;
         }
 
-        .linkedin-link {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        .linkedin-link:hover {
-            text-decoration: underline;
-        }
-
         .cv-upload-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -615,12 +724,6 @@
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .cv-upload-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
 
         @media (max-width: 900px) {
@@ -643,6 +746,10 @@
                 grid-template-columns: 1fr;
                 gap: 4px;
             }
+            .freeze-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -661,11 +768,48 @@
     </div>
 
     <div class="main-container">
-        <div class="freeze-banner">
-            <div class="freeze-icon">🔴</div>
-            <div class="freeze-text">
-                <strong id="freezeTitle">Hiring Freeze Mode Active</strong>
-                <p id="freezeText">External hiring is paused. Use internal talent first.</p>
+        <!-- HIRING FREEZE BANNER - ENHANCED -->
+        <div class="freeze-banner" id="freezeBanner">
+            <div class="freeze-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="freeze-icon">🔴</div>
+                    <div class="freeze-text">
+                        <strong id="freezeTitle">Hiring Freeze Mode Active</strong>
+                        <p id="freezeText">External hiring is paused. Use internal talent first.</p>
+                    </div>
+                </div>
+                <div class="freeze-controls">
+                    <button class="freeze-toggle-btn" id="freezeToggleBtn" onclick="toggleFreezeMode()">
+                        Deactivate
+                    </button>
+                    <button class="external-hire-btn" id="externalHireBtn" disabled>
+                        ❌ External Hiring Disabled
+                    </button>
+                </div>
+            </div>
+
+            <!-- Savings Tracker -->
+            <div class="savings-tracker" id="savingsTracker">
+                <div>
+                    <div style="font-size: 13px; color: #475569;">💰 Money Saved This Month</div>
+                    <div class="savings-amount" id="savingsAmount">€0</div>
+                </div>
+                <div class="savings-details">
+                    External hires avoided: <span id="externalHiresAvoided">0</span><br>
+                    Avg. cost per hire: <span id="avgCostPerHire">€4,000</span>
+                </div>
+            </div>
+
+            <!-- Talent Recommendations -->
+            <div class="talent-recommendations" id="talentRecommendations">
+                <h4>🔍 Internal Talent Available</h4>
+                <div id="talentList">
+                    <div class="talent-item">
+                        <div>
+                            <div class="talent-name">Loading talent recommendations...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -688,74 +832,44 @@
                     <div class="profile-name" id="detailProfileName">Employee Name</div>
                     <button class="edit-profile-btn" onclick="editDetailedProfile()">Edit Profile</button>
                 </div>
-
-                <div class="detail-row">
-                    <div class="detail-label">📍 Office</div>
-                    <div class="detail-value" id="detailOffice">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">📂 Department</div>
-                    <div class="detail-value" id="detailDepartment">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">🎯 Job Title / Role</div>
-                    <div class="detail-value" id="detailJobTitle">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">📧 Email</div>
-                    <div class="detail-value" id="detailEmail">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">📅 Joined</div>
-                    <div class="detail-value" id="detailJoined">-</div>
-                </div>
+                <div class="detail-row"><div class="detail-label">📍 Office</div><div class="detail-value" id="detailOffice">-</div></div>
+                <div class="detail-row"><div class="detail-label">📂 Department</div><div class="detail-value" id="detailDepartment">-</div></div>
+                <div class="detail-row"><div class="detail-label">🎯 Job Title</div><div class="detail-value" id="detailJobTitle">-</div></div>
+                <div class="detail-row"><div class="detail-label">📧 Email</div><div class="detail-value" id="detailEmail">-</div></div>
+                <div class="detail-row"><div class="detail-label">📅 Joined</div><div class="detail-value" id="detailJoined">-</div></div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>📝 About Me</h3>
-                <div class="detail-row">
-                    <div class="detail-label">Bio</div>
-                    <div class="detail-value" id="detailBio">-</div>
-                </div>
+                <div class="detail-value" id="detailBio">-</div>
             </div>
-
             <div class="profile-detail-section">
-                <h3>🔧 Skills & Expertise</h3>
+                <h3>🔧 Skills</h3>
                 <div class="skills-list" id="detailSkillsList"></div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>💼 Work History</h3>
                 <div class="detail-value" id="detailWorkHistory">No work history added yet.</div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>🎓 Education</h3>
                 <div class="detail-value" id="detailEducation">No education added yet.</div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>🗣️ Languages</h3>
                 <div class="detail-value" id="detailLanguages">No languages added yet.</div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>📜 Certifications</h3>
                 <div class="detail-value" id="detailCertifications">No certifications added yet.</div>
             </div>
-
             <div class="profile-detail-section">
                 <h3>🔗 Professional Links</h3>
-                <div class="detail-row">
-                    <div class="detail-label">LinkedIn</div>
-                    <div class="detail-value" id="detailLinkedin">-</div>
-                </div>
+                <div class="detail-row"><div class="detail-label">LinkedIn</div><div class="detail-value" id="detailLinkedin">-</div></div>
                 <div style="margin-top: 16px;">
                     <label class="detail-label" style="display: block; margin-bottom: 8px;">📄 CV / Resume</label>
                     <input type="file" id="cvFile" accept=".pdf,.doc,.docx" style="margin-bottom: 12px;">
                     <button class="cv-upload-btn" onclick="uploadCV()">Upload CV →</button>
                     <span id="cvFilename" style="margin-left: 12px; font-size: 12px; color: #64748b;"></span>
-                    <div id="cvDownload" style="margin-top: 8px;"></div>
                 </div>
             </div>
         </div>
@@ -770,14 +884,8 @@
                             <button class="edit-profile-btn" onclick="editProfile()" id="editProfileBtn">Edit Profile</button>
                         </div>
                         <div class="info-grid">
-                            <div class="info-card">
-                                <div class="info-label" id="officeLabel">📍 Office</div>
-                                <div class="info-value" id="profileOffice">-</div>
-                            </div>
-                            <div class="info-card">
-                                <div class="info-label" id="deptLabel">📂 Department</div>
-                                <div class="info-value" id="profileDepartment">-</div>
-                            </div>
+                            <div class="info-card"><div class="info-label" id="officeLabel">📍 Office</div><div class="info-value" id="profileOffice">-</div></div>
+                            <div class="info-card"><div class="info-label" id="deptLabel">📂 Department</div><div class="info-value" id="profileDepartment">-</div></div>
                         </div>
                         <div class="info-label" id="skillsLabel">🔧 Skills</div>
                         <div class="skills-list" id="skillsList"></div>
@@ -786,36 +894,11 @@
 
                     <div class="post-card">
                         <h3 id="postTitle" style="margin-bottom: 20px;">➕ Need help with something?</h3>
-                        <div class="form-group">
-                            <label id="titleLabel">What do you need help with?</label>
-                            <input type="text" id="projectTitle" placeholder="e.g., Data analysis for Q3 report">
-                        </div>
-                        <div class="form-group">
-                            <label id="descLabel">Describe the task</label>
-                            <textarea id="projectDesc" rows="3" placeholder="Describe what you need help with..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label id="skillsRequiredLabel">Skills required</label>
-                            <input type="text" id="projectSkills" placeholder="e.g., Excel, Python">
-                        </div>
-                        <div class="form-group">
-                            <label id="officeSelectLabel">Office location</label>
-                            <select id="projectOffice">
-                                <option value="Munich">Munich</option>
-                                <option value="Hamburg">Hamburg</option>
-                                <option value="Berlin">Berlin</option>
-                                <option value="Cologne">Cologne</option>
-                                <option value="Frankfurt">Frankfurt</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label id="priorityLabel">Priority</label>
-                            <select id="projectPriority">
-                                <option value="Normal">🟢 Normal</option>
-                                <option value="High">🟠 High</option>
-                                <option value="Urgent">🔴 Urgent</option>
-                            </select>
-                        </div>
+                        <div class="form-group"><label id="titleLabel">What do you need help with?</label><input type="text" id="projectTitle" placeholder="e.g., Data analysis for Q3 report"></div>
+                        <div class="form-group"><label id="descLabel">Describe the task</label><textarea id="projectDesc" rows="3" placeholder="Describe what you need help with..."></textarea></div>
+                        <div class="form-group"><label id="skillsRequiredLabel">Skills required</label><input type="text" id="projectSkills" placeholder="e.g., Excel, Python"></div>
+                        <div class="form-group"><label id="officeSelectLabel">Office location</label><select id="projectOffice"><option value="Munich">Munich</option><option value="Hamburg">Hamburg</option><option value="Berlin">Berlin</option><option value="Cologne">Cologne</option><option value="Frankfurt">Frankfurt</option></select></div>
+                        <div class="form-group"><label id="priorityLabel">Priority</label><select id="projectPriority"><option value="Normal">🟢 Normal</option><option value="High">🟠 High</option><option value="Urgent">🔴 Urgent</option></select></div>
                         <button class="submit-btn" onclick="postProject()" id="postBtn">Post Request →</button>
                     </div>
                 </div>
@@ -835,17 +918,11 @@
                             </select>
                         </div>
                     </div>
-                    <div id="projectsList" class="projects-list">
-                        <div class="empty-state">Loading requests...</div>
-                    </div>
+                    <div id="projectsList" class="projects-list"><div class="empty-state">Loading requests...</div></div>
 
                     <div style="margin-top: 40px;">
-                        <div class="section-header">
-                            <h2 id="completedTitle">✅ Completed Requests</h2>
-                        </div>
-                        <div id="completedList" class="projects-list">
-                            <div class="empty-state" id="completedEmpty">No completed requests yet. Complete a request to see it here.</div>
-                        </div>
+                        <div class="section-header"><h2 id="completedTitle">✅ Completed Requests</h2></div>
+                        <div id="completedList" class="projects-list"><div class="empty-state" id="completedEmpty">No completed requests yet.</div></div>
                     </div>
                 </div>
             </div>
@@ -854,29 +931,12 @@
         <!-- Admin Tab -->
         <div id="adminTab" class="tab-content">
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalRequests">0</div>
-                    <div class="stat-label" id="totalRequestsLabel">Total Requests</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="completedCount">0</div>
-                    <div class="stat-label" id="completedLabel">Completed Requests</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="openCount">0</div>
-                    <div class="stat-label" id="openLabel">Open Requests</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="activeEmployees">0</div>
-                    <div class="stat-label" id="activeLabel">Active Employees</div>
-                </div>
+                <div class="stat-card"><div class="stat-number" id="totalRequests">0</div><div class="stat-label" id="totalRequestsLabel">Total Requests</div></div>
+                <div class="stat-card"><div class="stat-number" id="completedCount">0</div><div class="stat-label" id="completedLabel">Completed</div></div>
+                <div class="stat-card"><div class="stat-number" id="openCount">0</div><div class="stat-label" id="openLabel">Open</div></div>
+                <div class="stat-card"><div class="stat-number" id="activeEmployees">0</div><div class="stat-label" id="activeLabel">Active Employees</div></div>
             </div>
-
-            <div class="top-helper-list">
-                <h3 id="topHelpersTitle" style="margin-bottom: 16px;">🏆 Top Helpers</h3>
-                <div id="topHelpersList"></div>
-            </div>
-
+            <div class="top-helper-list"><h3 id="topHelpersTitle" style="margin-bottom: 16px;">🏆 Top Helpers</h3><div id="topHelpersList"></div></div>
             <div class="post-card" style="margin-top: 24px;">
                 <h3 id="exportTitle">📎 Export Data</h3>
                 <p id="exportText" style="margin-bottom: 16px; color: #64748b;">Download reports for your records</p>
@@ -892,18 +952,10 @@
         let completedRequests = JSON.parse(localStorage.getItem('bridgr_completed') || '[]');
         let currentLang = localStorage.getItem('bridgr_lang') || 'en';
         let currentUserId = null;
-        
-        let profileData = JSON.parse(localStorage.getItem('bridgr_profile_data')) || {
-            jobTitle: '',
-            joined: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-            workHistory: '',
-            education: '',
-            languages: '',
-            certifications: '',
-            linkedin: '',
-            cvFilename: ''
-        };
-        
+        let totalSaved = parseInt(localStorage.getItem('bridgr_saved')) || 0;
+        let externalHiresAvoided = parseInt(localStorage.getItem('bridgr_external_avoided')) || 0;
+        let isFreezeActive = localStorage.getItem('bridgr_freeze_active') !== 'false';
+
         let employeeSkills = ['Data Analysis', 'Project Management', 'Python'];
         let employeeBio = 'Experienced data analyst looking to help colleagues across offices.';
         let employeeOffice = 'Berlin';
@@ -928,10 +980,10 @@
                 openRequestsTitle: "📋 Open Requests",
                 filterLabel: "Filter by office:",
                 completedTitle: "✅ Completed Requests",
-                completedEmpty: "No completed requests yet. Complete a request to see it here.",
+                completedEmpty: "No completed requests yet.",
                 totalRequestsLabel: "Total Requests",
-                completedLabel: "Completed Requests",
-                openLabel: "Open Requests",
+                completedLabel: "Completed",
+                openLabel: "Open",
                 activeLabel: "Active Employees",
                 topHelpersTitle: "🏆 Top Helpers",
                 exportTitle: "📎 Export Data",
@@ -940,8 +992,8 @@
             },
             de: {
                 freezeTitle: "Einstellungsstopp Modus Aktiv",
-                freezeText: "Externe Einstellungen sind pausiert. Nutzen Sie zuerst interne Talente.",
-                welcomeText: "Verbinden Sie sich mit internen Talenten in allen Büros",
+                freezeText: "Externe Einstellungen sind pausiert. Nutzen Sie interne Talente.",
+                welcomeText: "Verbinden Sie sich mit internen Talenten",
                 editProfileBtn: "Profil Bearbeiten",
                 officeLabel: "📍 Büro",
                 deptLabel: "📂 Abteilung",
@@ -956,14 +1008,14 @@
                 openRequestsTitle: "📋 Offene Anfragen",
                 filterLabel: "Filtern nach Büro:",
                 completedTitle: "✅ Erledigte Anfragen",
-                completedEmpty: "Noch keine erledigten Anfragen. Erledigen Sie eine Anfrage, um sie hier zu sehen.",
+                completedEmpty: "Noch keine erledigten Anfragen.",
                 totalRequestsLabel: "Gesamt Anfragen",
-                completedLabel: "Erledigte Anfragen",
-                openLabel: "Offene Anfragen",
+                completedLabel: "Erledigt",
+                openLabel: "Offen",
                 activeLabel: "Aktive Mitarbeiter",
                 topHelpersTitle: "🏆 Top Helfer",
                 exportTitle: "📎 Daten Exportieren",
-                exportText: "Laden Sie Berichte für Ihre Aufzeichnungen herunter",
+                exportText: "Laden Sie Berichte herunter",
                 exportBtn: "Als CSV Exportieren →"
             }
         };
@@ -998,145 +1050,81 @@
             document.getElementById('exportBtn').innerText = t.exportBtn;
         }
 
+        function toggleFreezeMode() {
+            isFreezeActive = !isFreezeActive;
+            localStorage.setItem('bridgr_freeze_active', isFreezeActive);
+            updateFreezeUI();
+        }
+
+        function updateFreezeUI() {
+            const btn = document.getElementById('freezeToggleBtn');
+            const externalBtn = document.getElementById('externalHireBtn');
+            const banner = document.getElementById('freezeBanner');
+
+            if (isFreezeActive) {
+                banner.style.borderLeftColor = '#f59e0b';
+                banner.style.background = 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)';
+                btn.textContent = 'Deactivate';
+                externalBtn.disabled = true;
+                externalBtn.innerHTML = '❌ External Hiring Disabled';
+                externalBtn.className = 'external-hire-btn';
+                document.getElementById('freezeTitle').innerText = translations[currentLang].freezeTitle;
+                document.getElementById('freezeText').innerText = translations[currentLang].freezeText;
+            } else {
+                banner.style.borderLeftColor = '#94a3b8';
+                banner.style.background = 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)';
+                btn.textContent = 'Activate';
+                externalBtn.disabled = false;
+                externalBtn.innerHTML = '✅ External Hiring Enabled';
+                externalBtn.className = 'external-hire-btn active';
+                document.getElementById('freezeTitle').innerText = 'Hiring Freeze Mode Inactive';
+                document.getElementById('freezeText').innerText = 'External hiring is allowed.';
+            }
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'de' : 'en';
             localStorage.setItem('bridgr_lang', currentLang);
             applyLanguage();
-        }
-
-        async function uploadCV() {
-            const fileInput = document.getElementById('cvFile');
-            const file = fileInput.files[0];
-            if (!file) {
-                alert('Please select a file first');
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('cv', file);
-            
-            try {
-                const response = await fetch(`${API_URL}/users/${currentUserId}/upload-cv`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    document.getElementById('cvFilename').innerHTML = `📄 ${result.filename}`;
-                    document.getElementById('cvDownload').innerHTML = `<a href="${API_URL}/uploads/${result.filename}" target="_blank" class="linkedin-link">📥 Download CV</a>`;
-                    alert('CV uploaded successfully!');
-                } else {
-                    alert('Upload failed');
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-
-        async function loadCV() {
-            if (!currentUserId) return;
-            try {
-                const response = await fetch(`${API_URL}/users/${currentUserId}/cv`);
-                const data = await response.json();
-                if (data.cvUrl) {
-                    document.getElementById('cvDownload').innerHTML = `<a href="${API_URL}${data.cvUrl}" target="_blank" class="linkedin-link">📥 Download CV</a>`;
-                    const filename = data.cvUrl.split('/').pop();
-                    document.getElementById('cvFilename').innerHTML = `📄 ${filename}`;
-                }
-            } catch (error) {
-                console.error('Error loading CV:', error);
-            }
-        }
-
-        function displayDetailedProfile() {
-            document.getElementById('detailProfileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
-            document.getElementById('detailOffice').innerHTML = currentUser.campus || 'Berlin';
-            document.getElementById('detailDepartment').innerHTML = currentUser.department || 'Not specified';
-            document.getElementById('detailJobTitle').innerHTML = profileData.jobTitle || 'Not specified';
-            document.getElementById('detailEmail').innerHTML = currentUser.email;
-            document.getElementById('detailJoined').innerHTML = profileData.joined || new Date().toLocaleDateString();
-            document.getElementById('detailBio').innerHTML = employeeBio;
-            document.getElementById('detailWorkHistory').innerHTML = profileData.workHistory || 'No work history added yet.';
-            document.getElementById('detailEducation').innerHTML = profileData.education || 'No education added yet.';
-            document.getElementById('detailLanguages').innerHTML = profileData.languages || 'No languages added yet.';
-            document.getElementById('detailCertifications').innerHTML = profileData.certifications || 'No certifications added yet.';
-            
-            if (profileData.linkedin) {
-                document.getElementById('detailLinkedin').innerHTML = `<a href="${profileData.linkedin}" target="_blank" class="linkedin-link">${profileData.linkedin}</a>`;
-            } else {
-                document.getElementById('detailLinkedin').innerHTML = 'Not provided';
-            }
-            
-            const skillsHtml = employeeSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
-            document.getElementById('detailSkillsList').innerHTML = skillsHtml || '<span class="skill-tag">No skills added</span>';
-        }
-
-        function editDetailedProfile() {
-            const newJobTitle = prompt("Enter your job title / role:", profileData.jobTitle);
-            if (newJobTitle !== null) profileData.jobTitle = newJobTitle;
-            
-            const newWorkHistory = prompt("Enter your work history (previous roles at this company):", profileData.workHistory);
-            if (newWorkHistory !== null) profileData.workHistory = newWorkHistory;
-            
-            const newEducation = prompt("Enter your education:", profileData.education);
-            if (newEducation !== null) profileData.education = newEducation;
-            
-            const newLanguages = prompt("Enter languages you speak (comma separated):", profileData.languages);
-            if (newLanguages !== null) profileData.languages = newLanguages;
-            
-            const newCertifications = prompt("Enter your certifications:", profileData.certifications);
-            if (newCertifications !== null) profileData.certifications = newCertifications;
-            
-            const newLinkedin = prompt("Enter your LinkedIn profile URL:", profileData.linkedin);
-            if (newLinkedin !== null) profileData.linkedin = newLinkedin;
-            
-            localStorage.setItem('bridgr_profile_data', JSON.stringify(profileData));
-            displayDetailedProfile();
-            alert('Profile updated!');
+            updateFreezeUI();
         }
 
         async function loadData() {
             const user = localStorage.getItem('bridgr_user');
-            if (!user) { 
-                window.location.href = 'signup.html'; 
-                return; 
-            }
+            if (!user) { window.location.href = 'signup.html'; return; }
             currentUser = JSON.parse(user);
-            
-            // Get user ID from database
-            try {
-                const response = await fetch(`${API_URL}/users`);
-                const users = await response.json();
-                const foundUser = users.find(u => u.email === currentUser.email);
-                if (foundUser) {
-                    currentUserId = foundUser.id;
-                }
-            } catch(e) {
-                console.error('Could not fetch user ID');
-            }
-            
+
             document.getElementById('welcomeName').innerHTML = `Hey ${currentUser.firstName || currentUser.email.split('@')[0]}! 👋`;
             document.getElementById('companyBadge').innerHTML = `📍 ${currentUser.campus || 'Berlin'} Office`;
             document.getElementById('avatarInitials').innerText = (currentUser.firstName?.charAt(0) || 'U').toUpperCase();
             document.getElementById('profileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
             document.getElementById('profileOffice').innerHTML = currentUser.campus || 'Berlin';
             document.getElementById('profileDepartment').innerHTML = currentUser.department || 'Not specified';
-            
+
+            try {
+                const response = await fetch(`${API_URL}/users`);
+                const users = await response.json();
+                const foundUser = users.find(u => u.email === currentUser.email);
+                if (foundUser) currentUserId = foundUser.id;
+            } catch(e) { console.error('Could not fetch user ID'); }
+
             const savedSkills = localStorage.getItem('bridgr_skills');
             if (savedSkills) employeeSkills = JSON.parse(savedSkills);
             const savedBio = localStorage.getItem('bridgr_bio');
             if (savedBio) employeeBio = savedBio;
-            
+
             displaySkills();
             document.getElementById('userBio').innerHTML = employeeBio;
-            
+
             displayDetailedProfile();
-            await loadCV();
-            
+            updateFreezeUI();
+            updateSavings();
+            await loadTalentRecommendations();
+
             await loadProjects();
             displayCompletedRequests();
             updateAdminDashboard();
-            
+
             document.getElementById('officeFilter').addEventListener('change', () => displayProjects());
             applyLanguage();
         }
@@ -1144,6 +1132,18 @@
         function displaySkills() {
             const skillsHtml = employeeSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
             document.getElementById('skillsList').innerHTML = skillsHtml || '<span class="skill-tag">Add skills</span>';
+        }
+
+        function displayDetailedProfile() {
+            document.getElementById('detailProfileName').innerHTML = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || currentUser.email;
+            document.getElementById('detailOffice').innerHTML = currentUser.campus || 'Berlin';
+            document.getElementById('detailDepartment').innerHTML = currentUser.department || 'Not specified';
+            document.getElementById('detailJobTitle').innerHTML = currentUser.jobTitle || 'Not specified';
+            document.getElementById('detailEmail').innerHTML = currentUser.email;
+            document.getElementById('detailJoined').innerHTML = new Date().toLocaleDateString();
+            document.getElementById('detailBio').innerHTML = employeeBio;
+            const skillsHtml = employeeSkills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
+            document.getElementById('detailSkillsList').innerHTML = skillsHtml || '<span class="skill-tag">No skills added</span>';
         }
 
         function editProfile() {
@@ -1164,6 +1164,40 @@
             alert('Profile updated!');
         }
 
+        function editDetailedProfile() {
+            editProfile();
+        }
+
+        function updateSavings() {
+            document.getElementById('savingsAmount').innerHTML = `€${totalSaved.toLocaleString()}`;
+            document.getElementById('externalHiresAvoided').innerHTML = externalHiresAvoided;
+        }
+
+        async function loadTalentRecommendations() {
+            try {
+                const response = await fetch(`${API_URL}/users`);
+                const employees = await response.json();
+                // Exclude current user and find employees with skills
+                const others = employees.filter(e => e.email !== currentUser.email && e.skills && e.skills.length > 0);
+                const container = document.getElementById('talentList');
+                if (others.length === 0) {
+                    container.innerHTML = '<div class="talent-item"><div><div class="talent-name">No other employees with skills found.</div></div></div>';
+                    return;
+                }
+                container.innerHTML = others.slice(0, 5).map(e => `
+                    <div class="talent-item">
+                        <div>
+                            <div class="talent-name">${escapeHtml(e.first_name || '')} ${escapeHtml(e.last_name || '')}</div>
+                            <div class="talent-skills">${e.skills.map(s => `<span class="skill-tag" style="font-size:10px;">${escapeHtml(s)}</span>`).join(' ')}</div>
+                        </div>
+                        <div class="talent-office">📍 ${escapeHtml(e.campus || 'Unknown')}</div>
+                    </div>
+                `).join('');
+            } catch(error) {
+                console.error('Error loading talent:', error);
+            }
+        }
+
         async function loadProjects() {
             try {
                 const response = await fetch(`${API_URL}/projects`);
@@ -1178,12 +1212,10 @@
         function displayProjects() {
             const filter = document.getElementById('officeFilter').value;
             let filtered = filter === 'all' ? allProjects : allProjects.filter(p => p.campus === filter);
-            
             if (filtered.length === 0) {
                 document.getElementById('projectsList').innerHTML = '<div class="empty-state">✨ No open requests. Be the first to post!</div>';
                 return;
             }
-            
             document.getElementById('projectsList').innerHTML = filtered.map(p => {
                 const date = new Date(p.created_at);
                 const timeAgo = getTimeAgo(date);
@@ -1199,9 +1231,7 @@
                             </div>
                         </div>
                         <div class="project-description">${escapeHtml(p.description || 'No description provided.')}</div>
-                        <div class="skill-required">
-                            <span>🎯 Skills needed:</span> ${escapeHtml(p.looking_for || 'General help')}
-                        </div>
+                        <div class="skill-required"><span>🎯 Skills needed:</span> ${escapeHtml(p.looking_for || 'General help')}</div>
                         <div class="project-footer">
                             <span class="project-date">📅 ${timeAgo}</span>
                             <button class="complete-btn" onclick="completeRequest(this, '${escapeHtml(p.title)}', '${escapeHtml(p.campus)}', '${escapeHtml(p.author_email)}')">✓ Mark Complete</button>
@@ -1215,7 +1245,13 @@
             button.innerHTML = '✓ Completed';
             button.disabled = true;
             button.style.opacity = '0.6';
-            
+
+            totalSaved += 4000;
+            externalHiresAvoided += 1;
+            localStorage.setItem('bridgr_saved', totalSaved);
+            localStorage.setItem('bridgr_external_avoided', externalHiresAvoided);
+            updateSavings();
+
             completedRequests.unshift({
                 title: title,
                 office: office,
@@ -1226,21 +1262,17 @@
             localStorage.setItem('bridgr_completed', JSON.stringify(completedRequests));
             displayCompletedRequests();
             updateAdminDashboard();
-            
-            alert(`✅ "${title}" marked as complete!\n\nThank you for helping a colleague.`);
-            
+
+            alert(`✅ "${title}" marked as complete!\n\nYou saved €4,000 by using internal talent.\n\nTotal savings this month: €${totalSaved.toLocaleString()}`);
             const projectCard = button.closest('.project-card');
-            if (projectCard) {
-                projectCard.style.display = 'none';
-            }
+            if (projectCard) projectCard.style.display = 'none';
         }
 
         function displayCompletedRequests() {
             if (completedRequests.length === 0) {
-                document.getElementById('completedList').innerHTML = '<div class="empty-state">✅ No completed requests yet. Complete a request to see it here.</div>';
+                document.getElementById('completedList').innerHTML = '<div class="empty-state">✅ No completed requests yet.</div>';
                 return;
             }
-            
             document.getElementById('completedList').innerHTML = completedRequests.map(req => {
                 const date = new Date(req.completedAt);
                 return `
@@ -1249,33 +1281,24 @@
                             <div class="project-title">✅ ${escapeHtml(req.title)}</div>
                             <div class="office-badge">📍 ${escapeHtml(req.office)}</div>
                         </div>
-                        <div class="skill-required">
-                            <span>🙏 Completed by ${escapeHtml(req.completedBy)}</span>
-                        </div>
-                        <div class="project-footer">
-                            <span class="project-date">📅 Completed: ${date.toLocaleDateString()}</span>
-                        </div>
+                        <div class="skill-required"><span>🙏 Completed by ${escapeHtml(req.completedBy)}</span></div>
+                        <div class="project-footer"><span class="project-date">📅 Completed: ${date.toLocaleDateString()}</span></div>
                     </div>
                 `;
             }).join('');
         }
 
         function updateAdminDashboard() {
-            const totalRequests = allProjects.length;
-            const openCount = allProjects.length;
-            const completedCount = completedRequests.length;
-            
-            document.getElementById('totalRequests').innerText = totalRequests;
-            document.getElementById('completedCount').innerText = completedCount;
-            document.getElementById('openCount').innerText = openCount;
+            document.getElementById('totalRequests').innerText = allProjects.length;
+            document.getElementById('completedCount').innerText = completedRequests.length;
+            document.getElementById('openCount').innerText = allProjects.length;
             document.getElementById('activeEmployees').innerText = '3';
-            
+
             const helperCounts = {};
             completedRequests.forEach(req => {
                 const helper = req.completedBy;
                 helperCounts[helper] = (helperCounts[helper] || 0) + 1;
             });
-            
             const sortedHelpers = Object.entries(helperCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
             const topHelpersHtml = sortedHelpers.map(([name, count]) => `
                 <div class="helper-item">
@@ -1283,7 +1306,6 @@
                     <span class="helper-count">${count} completed</span>
                 </div>
             `).join('');
-            
             document.getElementById('topHelpersList').innerHTML = topHelpersHtml || '<div class="empty-state">No helpers yet</div>';
         }
 
@@ -1303,26 +1325,18 @@
 
         async function postProject() {
             const title = document.getElementById('projectTitle').value;
-            const description = document.getElementById('projectDesc').value;
-            const looking_for = document.getElementById('projectSkills').value;
-            const campus = document.getElementById('projectOffice').value;
-            const priority = document.getElementById('projectPriority').value;
-            
-            if (!title) {
-                alert('Please enter a title');
-                return;
-            }
-            
+            if (!title) { alert('Please enter a title'); return; }
+
             try {
                 const response = await fetch(`${API_URL}/projects`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         title: title,
-                        description: description,
-                        looking_for: looking_for || 'Help needed',
-                        campus: campus,
-                        priority: priority,
+                        description: document.getElementById('projectDesc').value,
+                        looking_for: document.getElementById('projectSkills').value || 'Help needed',
+                        campus: document.getElementById('projectOffice').value,
+                        priority: document.getElementById('projectPriority').value,
                         author_email: currentUser.email
                     })
                 });
@@ -1331,6 +1345,7 @@
                     document.getElementById('projectDesc').value = '';
                     document.getElementById('projectSkills').value = '';
                     await loadProjects();
+                    await loadTalentRecommendations();
                     alert('✅ Request posted!');
                 } else {
                     alert('Error posting request');
@@ -1346,7 +1361,6 @@
             const diffMins = Math.floor(diffMs / 60000);
             const diffHours = Math.floor(diffMins / 60);
             const diffDays = Math.floor(diffHours / 24);
-            
             if (diffMins < 1) return 'just now';
             if (diffMins < 60) return `${diffMins} min ago`;
             if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
@@ -1368,19 +1382,13 @@
             window.location.href = '../index.html';
         }
 
+        // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
                 document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
-                if (btn.dataset.tab === 'admin') {
-                    updateAdminDashboard();
-                }
-                if (btn.dataset.tab === 'profile') {
-                    displayDetailedProfile();
-                    loadCV();
-                }
             });
         });
 
